@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+
+    <title>Raduga Weather example Just image</title>
+
+    <script src="http://leaflet.cloudmade.com/dist/leaflet.js"></script>
+    <meta name="viewport" content="width=320">
+    <style>
+        body {
+            padding: 0px;
+        }
+        img {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+        }
+    </style>
+</head>
+
+  <body>
+    <img src="/tiles/_earth.png">
+    <img src="/tiles/{{ LATEST_PREC_SLUG }}.png" style="opacity: 0.8;">
+  </body>
+
+</html>

@@ -2,24 +2,17 @@
 
 import os
 import re
+
 from PIL import Image
 
-from fetch import TILE_FOLDER
+from settings import TILE_SERVER, TILE_FOLDER, LATEST_PREC_FOLDER
 
-def stitch_tiles(folder=None):
+def stitch_tiles(folder=LATEST_PREC_FOLDER):
     """
     The images as downloaded from OpenStreetMap and OpenWeatherMap come in
     256 pixel tiles. This function pastes these back together into a full
     4096 × 4096 image of the earth.
     """
-    if not folder:
-        # This is to find the latest folder of the form 2013-12-25T11:00:00
-        for f in sorted(os.listdir(TILE_FOLDER), reverse=True):
-            # ['_earth.png', '_earth', '2013-12-25T11:00:00.png', '2013-12-25T11:00:00', '2013-12-24T12:00:00']
-            path = os.path.join(TILE_FOLDER, f)
-            if re.match(r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}', f) and os.path.isdir(path):
-                folder = path
-                break
     
     if not folder:
         print "No folder found."
