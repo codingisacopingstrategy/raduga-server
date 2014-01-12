@@ -5,9 +5,9 @@
 
     <title>Raduga Weather example</title>
 
-    <link rel="stylesheet" href="http://leaflet.cloudmade.com/dist/leaflet.css" />
+    <link rel="stylesheet" href="/static/lib/leaflet.css" />
     <!--[if lte IE 8]><link rel="stylesheet" href="http://leaflet.cloudmade.com/dist/leaflet.ie.css" /><![endif]-->
-    <script src="http://leaflet.cloudmade.com/dist/leaflet.js"></script>
+    <script src="/static/lib/leaflet.js"></script>
     <meta name="viewport" content="width=320">
     <style>
         body {
@@ -29,7 +29,30 @@
   <body>
     <div id="map"> </div>
 
+    <script src="/static/lib/jquery-1.10.1.min.js"></script>
     <script>
+        var latlng2info = function(latlng) {
+            var data = JSON.stringify({
+                latitude: latlng.lat,
+                longitude: latlng.lng
+            });
+            $.ajax({
+                url: '/chance',
+                type: 'POST',
+                contentType: 'application/json',
+                data: data,
+                dataType: 'json',
+                processData: false,
+                succes: function(data) {
+                    alert("goo");
+                    console.log(data);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        };
+        
         var osmUrl = '/tiles/_earth/{z}/{x}/{y}.png',
         osmAttribution = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
         osmLayer = new L.TileLayer(osmUrl, {minZoom: 4, maxZoom: 4, attribution: osmAttribution});
@@ -42,9 +65,17 @@
         var precUrl = '/tiles/{{ LATEST_PREC_SLUG }}/{z}/{x}/{y}.png';
         var owmRainLayer = L.tileLayer(precUrl, {
             attribution: 'Map data &copy; <a href="http://openweathermap.org">OpenWeatherMap</a>',
-            maxZoom: 18
+            minZoom: 4,
+            maxZoom: 4
         });
         map.addLayer(owmRainLayer);
+
+        var handleClick = function(e) {
+            //console.log(e.latlng);
+            latlng2info(e.latlng);
+        };
+
+        map.on('click', handleClick);
 
     </script>
   </body>

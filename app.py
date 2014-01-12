@@ -4,6 +4,7 @@
 import os
 import re
 import sys
+import math
 import fnmatch
 
 # Dependencies: Flask + PIL or Pillow
@@ -12,6 +13,14 @@ from PIL import Image
 
 # Local imports
 from tile import stitch_tiles
+
+#
+def deg2px(lat_deg, lon_deg, zoom=4):
+    lat_rad = math.radians(lat_deg)
+    n = 2.0 ** zoom * 256
+    xpx = int((lon_deg + 180.0) / 360.0 * n)
+    ypx = int((1.0 - math.log(math.tan(lat_rad) + (1 / math.cos(lat_rad))) / math.pi) / 2.0 * n)
+    return (xpx, ypx)
 
 # Constants
 TILE_SERVER        = "http://{s}.tile.openweathermap.org/map/precipitation_cls/{z}/{x}/{y}.png"
@@ -46,7 +55,12 @@ def update_img():
 
 LATEST_PREC_IMG = update_img()
 
-app = Flask(__name__, static_folder='raduga_tiles', static_url_path='/tiles')
+app = Flask(__name__)
+
+# These static files should be served by the web server
+@app.route('/tiles/<path:filename>')
+def base_static(filename):
+    return send_from_directory(os.path.join(app.root_path, 'raduga_tiles'), filename)
 
 @app.route("/test/as_map")
 def pre_vis_tiled():
@@ -55,6 +69,17 @@ def pre_vis_tiled():
 @app.route("/test/as_image")
 def pre_vis_stitched():
     return render_template('image.html', LATEST_PREC_SLUG=LATEST_PREC_SLUG)
+ 
+@app.route("/chance", methods=['POST',])
+def rainbow_chance():
+    latitude = request.json['latitude']
+    longitude = request.json['longitude']
+    print LATEST_PREC_IMG.getpixel(deg2px(latitude, longitude))
+    obj = {
+       'latitude' : latitude,
+       'longitude' : longitude
+      }
+    return jsonify(obj)
 
 if __name__ == '__main__':
     app.run(debug=True)
