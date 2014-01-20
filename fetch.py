@@ -18,7 +18,7 @@ def quantisised_time():
     ISO representation of datetime rounded to nearest hour.
     To use for folder names etcetera.
     """
-    return datetime.now().strftime("%Y-%m-%dT%H:00:00")
+    return datetime.now().strftime("%Y-%m-%dT%H:00:00Z")
 
 def fetch():
     """
