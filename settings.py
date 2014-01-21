@@ -1,6 +1,9 @@
 import os
 import re
 
+ZOOM_LEVEL = z =  4
+TILE_SIZE = 256
+
 TILE_SERVER        = "http://{s}.tile.openweathermap.org/map/precipitation_cls/{z}/{x}/{y}.png"
 TILE_FOLDER        = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'raduga_tiles')
 
