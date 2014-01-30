@@ -1,16 +1,8 @@
 # -*- coding: utf-8 -*-
 
-import urllib
-from datetime import datetime
 import os
-from math import sin, degrees, radians
-
-# -*- coding: utf-8 -*-
-
-import os
-import re
-import math
 import json
+import subprocess
 from time import gmtime, strftime
 
 import dateutil.parser
@@ -18,46 +10,27 @@ from PIL import Image
 import Pysolar
 
 from settings import *
-
+from geo import *
+from utils import logger
 
 alllatlons = None
 
 try:
-    print "Reading in latlon array from file", strftime("%H:%M:%S", gmtime())
+    logger.debug("Reading in latlon array from file")
     f = open('latitudeslongitudesperpixel.json')
 except IOError:
-    print "Generating latlon array", strftime("%H:%M:%S", gmtime())
+    logger.debug("No file latitudeslongitudesperpixel.json. Generating latlon array")
     alllatlons = []
-    for x in range(z ** 2 * TILE_SIZE):
-        for y in range(z ** 2 * TILE_SIZE):
+    for y in range(0, z ** 2 * TILE_SIZE, 8):
+        for x in range(0, z ** 2 * TILE_SIZE, 8):
             alllatlons.append(px2deg(x, y))
+    logger.debug("Saving latlon array to disk")
     with open('latitudeslongitudesperpixel.json', 'w') as file:
         file.write(json.dumps(alllatlons, indent=2))
 
 if not alllatlons:
     with f:
         alllatlons = json.loads(f.read()) # Maybe there is a more efficient way to read in this 900M file.
-print "Done.", strftime("%H:%M:%S", gmtime())
-
-def num2deg(xtile, ytile, zoom=4):
-    n = 2.0 ** zoom
-    lon_deg = xtile / n * 360.0 - 180.0
-    lat_rad = math.atan(math.sinh(math.pi * (1 - 2 * ytile / n)))
-    lat_deg = math.degrees(lat_rad)
-    return (lat_deg, lon_deg)
-
-def px2deg(x, y, zoom=4):
-    xtile = x / 256.0 + 1 / 512.0
-    ytile = y / 256.0 + 1 / 512.0
-    return num2deg(xtile, ytile, zoom)
-
-def altitude2colors(altitude):
-    if 42 > altitude > 0:
-        return (255, 255, 0)
-    if altitude <= 0:
-        return (0, 0, 0)
-    else:
-        return (255, 255, 255)
 
 def sun(folder=LATEST_PREC_FOLDER):
     """
@@ -70,26 +43,110 @@ def sun(folder=LATEST_PREC_FOLDER):
     
     This area is yellow.
     """
+    def altitude2colors(altitude):
+        if 42 > altitude > 0:
+            return (255, 255, 255, 0)
+        else:
+            return (0, 0, 0)
     
     if not folder:
-        print "No folder found."
+        logger.warn("No latest precipation images folder found, aborting")
         return False
     
     DATE = dateutil.parser.parse(LATEST_PREC_SLUG)
     
-    full_img = Image.new("RGBA", (z ** 2 * TILE_SIZE, z ** 2 * TILE_SIZE))
+    """
+    The earth, just for presentation purposes
+    """
+    background = Image.open(os.path.join(TILE_FOLDER, "_earth.png"))
     
-    print "converting to altitude", strftime("%H:%M:%S", gmtime())
-    altitudes = [Pysolar.GetAltitude(latitude, longitude, DATE) for latitude, longitude in alllatlons]
-    print "converting to colors", strftime("%H:%M:%S", gmtime())
+    """
+    The mask of where the sun is between 0 and 42 degrees
+    We calculate it at a smaller size to be swift
+    """
+    logger.debug("creating a new image for the sun")
+    sun_mask = Image.new("RGBA", (512, 512))
+    
+    logger.debug("converting to altitude %s points" % len(alllatlons))
+    altitudes = [Pysolar.GetAltitudeFast(latitude, longitude, DATE) for latitude, longitude in alllatlons]
+    logger.debug("converting to colors")
     colors = map(altitude2colors, altitudes)
-    print "drawing to canvas", strftime("%H:%M:%S", gmtime())
-    full_img.putdata(colors)
-    print "writing to file", strftime("%H:%M:%S", gmtime())
-    full_img.save(os.path.join(folder, "%s-sun-rightangle.png" % LATEST_PREC_SLUG))
-    print "written", strftime("%H:%M:%S", gmtime())
+    logger.debug("drawing %s colors to canvas" % len(colors))
+    sun_mask.putdata(colors)
+    
+    # Calculate where the sun is in the image
+    sun_i = altitudes.index(max(altitudes))
+    sun_y = sun_i / 512
+    sun_x = sun_i % 512
+    sun_mask.putpixel((sun_x, sun_y), (255, 255, 0))
+    
+    # We’ll need this data for the final image, which is 4096 * 4096, not 512 * 512
+    sun_x, sun_y = sun_x * 8, sun_y * 8
+    
+    logger.debug("rescaling the sun image")
+    sun_mask = sun_mask.resize((4096, 4096))
+    
+    """
+    The layer with the satellite imagery
+    """
+    logger.debug("reading in and resizing the satellite imagery")
+    # Figuring out the bounds, in this case via http://oiswww.eumetsat.int/IPPS/html/GE/MET0D_VP-MPE.kml
+    # TODO: this is not actually correct
+    prec_x, prec_y = deg2px(57.4922, -57.4922)
+    prec_x_plus_width, prec_y_plus_height = deg2px(-57.4922, 57.4922)
+    prec_width  = prec_x_plus_width  - prec_x
+    prec_height = prec_y_plus_height - prec_y
+    
+    precipitation = Image.open(os.path.join(folder, "GE_MET0D_VP-MPE.png"))
+    precipitation.resize((prec_width, prec_height))
+    
+    logger.debug("convert all the non-transparent pixels to pink points")
+    width, _ = precipitation.size
+    for i, px in enumerate(precipitation.getdata()):
+        if px != (0, 0, 0, 0):
+            y = i / width
+            x = i % width
+            precipitation.putpixel((x, y), (255, 20, 147, 255))
+    
+    transparent_background = Image.new("RGBA", (4096, 4096))
+    transparent_background.paste(precipitation, (prec_x, prec_y), precipitation)
+    transparent_background.save(os.path.join(folder, "%s-clouds.png" % LATEST_PREC_SLUG))
+    
+    """
+    Transform the satellite imagery to find rainbows
+    """
+    logger.debug("call an external imagemagick process to perform a barrel distortion on the clouds")
+    infile = os.path.join(folder, "%s-clouds.png" % LATEST_PREC_SLUG)
+    outfile = os.path.join(folder, "%s-clouds-bol.png" % LATEST_PREC_SLUG)
+    composed_file = os.path.join(folder, "%s-clouds-composed.png" % LATEST_PREC_SLUG)
+    barrel_distortion = "0.0 0.0 0.025 0.975 %s %s" % (sun_x, sun_y)
+    
+    pipe = subprocess.Popen(['convert', infile,
+                             '-virtual-pixel', 'gray',
+                             '-distort', 'Barrel', barrel_distortion,
+                             '-negate',
+                             outfile])
+    pipe.wait()
+    
+    pipe = subprocess.Popen(['composite', '-gravity', 'center', outfile, infile, composed_file])
+    # convert 2013-12-24T12:00:00Z-clouds.png -virtual-pixel gray -distort Barrel "0.0 0.0 0.05 0.95 2048 2320" -negate 2013-12-24T12:00:00Z-clouds-bol.png
+    # mogrify -negate 2013-12-24T12\:00\:00Z-clouds-bol.png
+    # composite -gravity center 2013-12-24T12:00:00Z-clouds-bol.png   2013-12-24T12:00:00Z-clouds.png 2013-12-24T12:00:00Z-clouds-composed.png 
+    
+    cloud_image = Image.open(composed_file)
+    
+    """
+    Bringing it together
+    """
+    logger.debug("performing imposition for all the images")
+    background.paste(cloud_image, (0, 0), cloud_image)
+    background.paste(sun_mask, (0, 0), sun_mask)
+    
+    logger.debug("writing to file")
+    background.save(os.path.join(folder, "%s-sun-rightangle.png" % LATEST_PREC_SLUG))
+    logger.debug("written")
 
 if __name__ == '__main__':
     sun()
-    print "Executed succesfully"
+    logger.debug("Executed succesfully")
 
