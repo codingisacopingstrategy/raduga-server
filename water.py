@@ -23,7 +23,7 @@ import os
 import pytz
 import Pysolar
 import dateutil.parser
-from PIL import Image, ImageOps
+from PIL import Image, ImageOps, ImageFilter, ImageEnhance
 
 from settings import LATEST_GFS_FOLDER, LATEST_GFS_SLUG
 from utils import logger
@@ -38,8 +38,11 @@ def find_rainclouds():
 
     grib_file_path = os.path.join(LATEST_GFS_FOLDER, "GFS_half_degree.%s.pwat.grib" % LATEST_GFS_SLUG)
     json_file_path = os.path.join(LATEST_GFS_FOLDER, "GFS_half_degree.%s.pwat.json" % LATEST_GFS_SLUG)
-    png_file_path = os.path.join(LATEST_GFS_FOLDER, "GFS_half_degree.%s.pwat.png" % LATEST_GFS_SLUG)
+    png_file_path  = os.path.join(LATEST_GFS_FOLDER, "GFS_half_degree.%s.pwat.png" % LATEST_GFS_SLUG)
     
+    png_cloud_mask_file_path          = os.path.join(LATEST_GFS_FOLDER, "GFS_half_degree.cloud_mask.%s.pwat.png" % LATEST_GFS_SLUG)
+    png_cloud_mask_extruded_file_path = os.path.join(LATEST_GFS_FOLDER, "GFS_half_degree.cloud_mask.extruded.%s.pwat.png" % LATEST_GFS_SLUG)
+    png_cloud_mask_combined_file_path = os.path.join(LATEST_GFS_FOLDER, "GFS_half_degree.cloud_mask.combined.%s.pwat.png" % LATEST_GFS_SLUG)
     
     if not os.path.exists(grib_file_path):
         logger.debug("Expected GRIB file not foud")
@@ -79,6 +82,21 @@ def find_rainclouds():
     latitude = ph0
     longitude = l0
     
+    def prec2color(prec):
+#        return int(255 - prec * 60) 
+        return int(255 - prec * 3)
+    
+    logger.debug("Converting data to color, and writing it to canvas")
+    cloud_layer = Image.new("L", (ni, nj))
+    cloud_layer.putdata(map(prec2color, data))
+    
+    logger.debug("Pushing the contrast and then tresholding the clouds")
+    enhancer = ImageEnhance.Contrast(cloud_layer)
+    cloud_layer = enhancer.enhance(8)
+    threshold = 191  
+    cloud_layer = cloud_layer.point(lambda p: p > threshold and 255)  
+    
+    logger.debug("Calculating the solar altitudes for all combinations of latitude and longitude")
     altitudes = []
     for j in range(nj):
         for i in range(ni):
@@ -86,31 +104,55 @@ def find_rainclouds():
             longitude += dl
         latitude += dph
     
-    
-    def prec2color(prec):
-#        return int(255 - prec * 60) 
-        return int(255 - prec * 3)
-    
-    full_img = Image.new("L", (ni, nj))
-    logger.debug("Converting data to color, and writing it to canvas")
-    full_img.putdata(map(prec2color, data))
-    
     def altitude2colors(altitude):
         if 42 > altitude > 0:
-            return 0
-        else:
             return 255
+        else:
+            return 0
     
     sun_mask = Image.new("L", (ni, nj))
+    logger.debug("Calculating the colours based on the altitudes")
     colors = map(altitude2colors, altitudes)
     sun_mask.putdata(colors)
-    sun_mask.save('test.png')
     
-    full_img.paste(sun_mask, (0, 0), ImageOps.invert(sun_mask))
+    # Calculate where the sun is in the image
+    sun_i = altitudes.index(max(altitudes))
+    sun_y = sun_i / ni
+    sun_x = sun_i % ni
+    logger.debug("Found the sun at index %s corresponding to %s, %s" % (sun_i, sun_x, sun_y))
+    sun_mask.putpixel((sun_x, sun_y), 255)
     
+    middle = ni / 2
+    translate_x = middle - sun_x
+    logger.debug("Moving the image %s pixels to the right to have the sun exactly in the middle" % translate_x)
+    cloud_layer = cloud_layer.offset(translate_x)
+    
+    cloud_layer = ImageOps.invert(cloud_layer)
+    cloud_layer.save(png_cloud_mask_file_path)
+    
+    logger.debug("Barrel distorting the clouds")
+    barrel_distortion = "0.0 0.0 0.025 0.975 %s %s" % (sun_x + translate_x, sun_y)
+    pipe = subprocess.Popen(['convert', png_cloud_mask_file_path,
+                         '-virtual-pixel', 'black',
+                         '-filter','point',
+                         '-distort', 'Barrel', barrel_distortion,
+                         '+antialias',
+                         '-negate',
+                         png_cloud_mask_extruded_file_path])
+    pipe.wait()
+    
+    logger.debug("Adding the distorted clouds to the original, leaving rainbow area")
+    extruded_cloud_layer = Image.open(png_cloud_mask_extruded_file_path) 
+    cloud_layer.paste(extruded_cloud_layer, (0, 0), extruded_cloud_layer)
+    
+    logger.debug("Moving the image back to its original position")
+    cloud_layer = cloud_layer.offset(translate_x * -1)
+    
+    logger.debug("Adding the sun image")
+    cloud_layer.paste(ImageOps.invert(sun_mask), (0, 0), ImageOps.invert(sun_mask))
     
     logger.debug("Writing image file")
-    full_img.save(png_file_path)
+    cloud_layer.save(png_file_path)
     logger.debug("Written")
     
 
