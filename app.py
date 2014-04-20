@@ -22,7 +22,7 @@ def update_img():
     if not LATEST_PREC_FOLDER:
         sys.exit("No tiles found")
     # Check if the stitched image is already present 
-    LATEST_PREC_IMG_PATH = os.path.join(TILE_FOLDER, u'%s.png' % slug)
+    LATEST_PREC_IMG_PATH = os.path.join(TILE_FOLDER, u'%s.png' % LATEST_PREC_SLUG)
     if not os.path.exists(LATEST_PREC_IMG_PATH):
         # If not, stitch it
         print "Stitching tiles in for %s" % LATEST_PREC_SLUG
