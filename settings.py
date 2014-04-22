@@ -4,21 +4,6 @@ import sys
 from glob import glob
 
 """
-INTERNAL DATABASE SETTINGS
-"""
-
-SERVER_NAME = 'vps40616.public.cloudvps.com'
-
-if sys.platform == "darwin":
-    SERVER_NAME = '127.0.0.1:5000'
-
-DOMAIN = {
-    'photos': {},
-}
-
-MONGO_DBNAME = 'photos'
-
-"""
 WEATHER RESOURCES SETTINGS
 """
 
