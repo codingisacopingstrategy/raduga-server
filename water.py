@@ -41,6 +41,7 @@ def find_rainclouds():
     json_file_path = os.path.join(LATEST_GFS_FOLDER, "GFS_half_degree.%s.pwat.json" % LATEST_GFS_SLUG)
     png_file_path  = os.path.join(LATEST_GFS_FOLDER, "GFS_half_degree.%s.pwat.png" % LATEST_GFS_SLUG)
     
+    png_clouds_greyscale_file_path    = os.path.join(LATEST_GFS_FOLDER, "GFS_half_degree.clouds_greyscale.%s.pwat.png" % LATEST_GFS_SLUG)
     png_cloud_mask_file_path          = os.path.join(LATEST_GFS_FOLDER, "GFS_half_degree.cloud_mask.%s.pwat.png" % LATEST_GFS_SLUG)
     png_cloud_mask_extruded_file_path = os.path.join(LATEST_GFS_FOLDER, "GFS_half_degree.cloud_mask.extruded.%s.pwat.png" % LATEST_GFS_SLUG)
     png_cloud_mask_combined_file_path = os.path.join(LATEST_GFS_FOLDER, "GFS_half_degree.cloud_mask.combined.%s.pwat.png" % LATEST_GFS_SLUG)
@@ -93,6 +94,9 @@ def find_rainclouds():
     logger.debug("Converting data to color, and writing it to canvas")
     cloud_layer = Image.new("L", (ni, nj))
     cloud_layer.putdata(map(prec2color, data))
+    # Intermediary debug image:
+    # cloud_layer.save(png_clouds_greyscale_file_path)
+    
     
     logger.debug("Pushing the contrast and then tresholding the clouds")
     enhancer = ImageEnhance.Contrast(cloud_layer)
@@ -131,6 +135,8 @@ def find_rainclouds():
     logger.debug("Moving the image %s pixels to the right to have the sun exactly in the middle" % translate_x)
     cloud_layer = cloud_layer.offset(translate_x)
     
+    # Intermediary debug image:
+    # cloud_layer.save(png_cloud_mask_file_path.replace(".png", ".not-inverted.png"))
     cloud_layer = ImageOps.invert(cloud_layer)
     cloud_layer.save(png_cloud_mask_file_path)
     
@@ -152,6 +158,8 @@ def find_rainclouds():
     logger.debug("Moving the image back to its original position")
     cloud_layer = cloud_layer.offset(translate_x * -1)
     
+    # Intermediary debug image:
+    # cloud_layer.save(png_file_path.replace(".png", ".without-sun-mask.png"))
     logger.debug("Adding the sun image")
     cloud_layer.paste(ImageOps.invert(sun_mask), (0, 0), ImageOps.invert(sun_mask))
     
