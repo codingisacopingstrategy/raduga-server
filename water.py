@@ -134,7 +134,7 @@ def find_rainclouds():
     barrel_distortion = "0.0 0.0 0.025 0.975 %s %s" % (sun_x + translate_x, sun_y)
     pipe = subprocess.Popen(['convert', png_cloud_mask_file_path,
                          '-virtual-pixel', 'black',
-                         '-filter','point',
+                         '-filter','point', '-interpolate', 'NearestNeighbor',
                          '-distort', 'Barrel', barrel_distortion,
                          '+antialias',
                          '-negate',
