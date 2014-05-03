@@ -18,6 +18,7 @@ import subprocess
 from datetime import datetime
 import math
 import json
+import sys
 import os
 
 import pytz
@@ -54,7 +55,10 @@ def find_rainclouds():
         pipe = subprocess.Popen(['grib2json', '-d', '-n',
                              '-o', json_file_path,
                              grib_file_path])
-        pipe.wait()
+        c = pipe.wait()
+        if c != 0:
+            logger.error("Error in JSON conversion")
+            sys.exit()
         
     with open(json_file_path) as f:
         j = json.loads(f.read())
