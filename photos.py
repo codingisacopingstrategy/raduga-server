@@ -76,7 +76,8 @@ photos_schema = {
                 "type": "string",
                 "required": False
             }
-        }
+        },
+        "required": False
     },
     "filename": {
         "type": "string"
@@ -86,7 +87,8 @@ photos_schema = {
         "required": False
     },
     "md5": {
-        "type": "string"
+        "type": "string",
+        "required": False
     },
     "processed": {
         "type": "boolean"
@@ -128,7 +130,8 @@ photos_schema = {
                 "type": "string",
                 "required": False
             }
-        }
+        },
+        "required": False
     },
     "user": {
         "type": "dict",
