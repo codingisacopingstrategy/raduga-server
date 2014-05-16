@@ -31,8 +31,10 @@ from utils import logger
 
 def find_rainclouds():
     if not LATEST_GFS_FOLDER:
-        logger.debug("No grib files found. Run fetch.py?")
+        logger.debug("no grib files found. Run fetch.py?")
         return False
+    
+    logger.debug("starting cloud analysis with grib information from %s" % LATEST_GFS_SLUG)
     
     DATE = datetime.strptime(LATEST_GFS_SLUG, "%Y%m%d%H")       # strptime can’t handle timezones, what up with that?
     DATE = DATE.replace(tzinfo=pytz.UTC)                        # we know it’s UTC so we add that info http://stackoverflow.com/questions/7065164/how-to-make-an-unaware-datetime-timezone-aware-in-python
@@ -47,18 +49,18 @@ def find_rainclouds():
     png_cloud_mask_combined_file_path = os.path.join(LATEST_GFS_FOLDER, "GFS_half_degree.cloud_mask.combined.%s.pwat.png" % LATEST_GFS_SLUG)
     
     if not os.path.exists(grib_file_path):
-        logger.debug("Expected GRIB file not foud")
+        logger.debug("expected GRIB file not foud")
         return False
     if os.path.exists(json_file_path):
-        logger.debug("Corresponding JSON found, skipping JSON conversion")
+        logger.debug("corresponding JSON found, skipping JSON conversion")
     else:
-        logger.debug("Converting GRIB into JSON file: %s" % json_file_path)
+        logger.debug("converting GRIB into JSON file: %s" % json_file_path)
         pipe = subprocess.Popen(['grib2json', '-d', '-n',
                              '-o', json_file_path,
                              grib_file_path])
         c = pipe.wait()
         if c != 0:
-            logger.error("Error in JSON conversion")
+            logger.error("error in JSON conversion")
             sys.exit()
         
     with open(json_file_path) as f:
