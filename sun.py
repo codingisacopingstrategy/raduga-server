@@ -12,6 +12,7 @@ import Pysolar
 from settings import *
 from geo import *
 from utils import logger
+from tile import stitch_tiles
 
 alllatlons = None
 
@@ -32,7 +33,7 @@ if not alllatlons:
     with f:
         alllatlons = json.loads(f.read()) # Maybe there is a more efficient way to read in this 900M file.
 
-def sun(folder=LATEST_PREC_FOLDER):
+def sun():
     """
     This function plots a full 4096 × 4096 image of the earth,
     Pixels are black where it is night and white where it is day.
@@ -49,9 +50,20 @@ def sun(folder=LATEST_PREC_FOLDER):
         else:
             return (0, 0, 0)
     
+    folder=LATEST_PREC_FOLDER
+    
     if not folder:
         logger.warn("No latest precipation images folder found, aborting")
         return False
+    
+    """
+    Not stitching these tiles for now:
+    LATEST_PREC_IMG_PATH = os.path.join(TILE_FOLDER, u'%s.png' % LATEST_PREC_SLUG)
+    if not os.path.exists(LATEST_PREC_IMG_PATH):
+        # If not, stitch it
+        print "Stitching tiles in for %s" % LATEST_PREC_SLUG
+        stitch_tiles(LATEST_PREC_FOLDER) 
+    """
     
     DATE = dateutil.parser.parse(LATEST_PREC_SLUG)
     
