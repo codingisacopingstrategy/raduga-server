@@ -36,6 +36,10 @@ def get_latest_gfs_folder():
         if re.match(r'\d{10}', slug) and os.path.isdir(path) and len(glob(os.path.join(path, '*pwat.grib'))) > 0:
             return path, slug
 
+def get_latest_rainbows_url():
+    slug = get_latest_gfs_folder()[1]
+    return "/static/gfs/" + slug + "/rainbows." + slug + ".json"
+
 def get_latest_elektro_l_url():
     global ELEKTRO_L_FOLDER
     for f in sorted(os.listdir(ELEKTRO_L_FOLDER), reverse=True):

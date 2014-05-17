@@ -24,5 +24,9 @@ def readme():
 def latest_elektro():
     return redirect(get_latest_elektro_l_url())
 
+@app.route("/latest/rainbows.json")
+def latest_redirect():
+    return redirect(get_latest_rainbows_url())
+
 if __name__ == '__main__':
     app.run(debug=True)

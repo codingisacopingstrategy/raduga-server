@@ -29,6 +29,38 @@ from PIL import Image, ImageOps, ImageFilter, ImageEnhance
 from settings import LATEST_GFS_FOLDER, LATEST_GFS_SLUG
 from utils import logger
 
+
+def img2features(image):
+    """
+    Given a black and white (bitmap) image, return a Geo-JSON string, that for each black pixel
+    represents a square point on the map.
+    """
+    def px2feature(px):
+        left   = px[0] * .5
+        right  = left + 0.5
+        top    = px[1] * -.5 + 90
+        bottom = top + 0.5
+        return { "type": "Polygon",
+            "coordinates": [
+                [ [left, top], [right, top], [right, bottom], [left, bottom], [left, top] ]
+            ]
+        }
+    
+    feature_collection = {
+                            'features' : [],
+                            'type': 'FeatureCollection'
+                          }
+
+    pixels = image.load()
+    # This is a slow but straightforward way of going about it:
+    for x in range(image.size[0]):
+        for y in range(image.size[1]):
+            if pixels[x,y] == 0:
+                feature_collection['features'].append(px2feature((x,y)))
+    
+    return json.dumps(feature_collection, indent=4)
+
+
 def find_rainclouds():
     if not LATEST_GFS_FOLDER:
         logger.debug("no grib files found. Run fetch.py?")
@@ -49,6 +81,8 @@ def find_rainclouds():
     png_cloud_mask_combined_file_path = os.path.join(LATEST_GFS_FOLDER, "GFS_half_degree.cloud_mask.combined.%s.pwat.png" % LATEST_GFS_SLUG)
     
     russia_layer = Image.open(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'russia.png'))
+    
+    rainbow_json_file_path = os.path.join(LATEST_GFS_FOLDER, "rainbows.%s.json" % LATEST_GFS_SLUG)
     
     if not os.path.exists(grib_file_path):
         logger.debug("expected GRIB file not foud")
@@ -169,6 +203,10 @@ def find_rainclouds():
     
     logger.debug("Showing only rainbows over Russian soil")
     cloud_layer.paste(russia_layer, (0, 0), russia_layer)
+    
+    logger.debug("Encoding the rainbow locations as geographic features in a JSON file")
+    with open(rainbow_json_file_path, 'w') as f:
+        f.write(img2features(cloud_layer))
     
     logger.debug("Writing image file")
     cloud_layer.save(png_file_path)
