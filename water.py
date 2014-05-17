@@ -48,6 +48,8 @@ def find_rainclouds():
     png_cloud_mask_extruded_file_path = os.path.join(LATEST_GFS_FOLDER, "GFS_half_degree.cloud_mask.extruded.%s.pwat.png" % LATEST_GFS_SLUG)
     png_cloud_mask_combined_file_path = os.path.join(LATEST_GFS_FOLDER, "GFS_half_degree.cloud_mask.combined.%s.pwat.png" % LATEST_GFS_SLUG)
     
+    russia_layer = Image.open(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'russia.png'))
+    
     if not os.path.exists(grib_file_path):
         logger.debug("expected GRIB file not foud")
         return False
@@ -153,7 +155,7 @@ def find_rainclouds():
                          png_cloud_mask_extruded_file_path])
     pipe.wait()
     
-    logger.debug("Adding the distorted clouds to the original, leaving rainbow area")
+    logger.debug("Adding the distorted clouds to the original, leaving only rainbow area")
     extruded_cloud_layer = Image.open(png_cloud_mask_extruded_file_path) 
     cloud_layer.paste(extruded_cloud_layer, (0, 0), extruded_cloud_layer)
     
@@ -162,8 +164,11 @@ def find_rainclouds():
     
     # Intermediary debug image:
     # cloud_layer.save(png_file_path.replace(".png", ".without-sun-mask.png"))
-    logger.debug("Adding the sun image")
+    logger.debug("Masking where it is night or where the sun is too high to see rainbows")
     cloud_layer.paste(ImageOps.invert(sun_mask), (0, 0), ImageOps.invert(sun_mask))
+    
+    logger.debug("Showing only rainbows over Russian soil")
+    cloud_layer.paste(russia_layer, (0, 0), russia_layer)
     
     logger.debug("Writing image file")
     cloud_layer.save(png_file_path)
