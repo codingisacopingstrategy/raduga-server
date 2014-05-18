@@ -44,7 +44,7 @@ def img2features(image, colours=False):
         left    = px[0] * .5
         right   = left + 0.5
         top     = px[1] * -.5 + 90
-        bottom  = top + 0.5
+        bottom  = top - 0.5
         feature =  {   "type": "Feature",
                     "geometry": { "type": "Polygon",
                         "coordinates": [
