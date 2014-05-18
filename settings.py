@@ -40,6 +40,10 @@ def get_latest_rainbows_url():
     slug = get_latest_gfs_folder()[1]
     return "/static/gfs/" + slug + "/rainbows." + slug + ".json"
 
+def get_latest_clouds_url():
+    slug = get_latest_gfs_folder()[1]
+    return "/static/gfs/" + slug + "/clouds." + slug + ".json"
+
 def get_latest_elektro_l_url():
     global ELEKTRO_L_FOLDER
     for f in sorted(os.listdir(ELEKTRO_L_FOLDER), reverse=True):

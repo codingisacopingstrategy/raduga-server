@@ -25,8 +25,12 @@ def latest_elektro():
     return redirect(get_latest_elektro_l_url())
 
 @app.route("/latest/rainbows.json")
-def latest_redirect():
+def latest_rainbows():
     return redirect(get_latest_rainbows_url())
+
+@app.route("/latest/clouds.json")
+def latest_clouds():
+    return redirect(get_latest_clouds_url())
 
 if __name__ == '__main__':
     app.run(debug=True)

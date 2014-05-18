@@ -30,21 +30,36 @@ from settings import LATEST_GFS_FOLDER, LATEST_GFS_SLUG
 from utils import logger
 
 
-def img2features(image):
+def img2features(image, colours=False):
     """
-    Given a black and white (bitmap) image, return a Geo-JSON string, that for each black pixel
+    colours=False:
+    Given a grey-scale image, return a Geo-JSON string, that for each black pixel
     represents a square point on the map.
+    
+    colours=True:
+    Given a grey-scale image, return a Geo-JSON string, that for each grey pixel
+    represents a square point on the map, with the grey colour as a property.
     """
-    def px2feature(px):
-        left   = px[0] * .5
-        right  = left + 0.5
-        top    = px[1] * -.5 + 90
-        bottom = top + 0.5
-        return { "type": "Polygon",
-            "coordinates": [
-                [ [left, top], [right, top], [right, bottom], [left, bottom], [left, top] ]
-            ]
-        }
+    def px2feature(px, colour=None):
+        left    = px[0] * .5
+        right   = left + 0.5
+        top     = px[1] * -.5 + 90
+        bottom  = top + 0.5
+        feature =  {   "type": "Feature",
+                    "geometry": { "type": "Polygon",
+                        "coordinates": [
+                            [ [left, top], [right, top], [right, bottom], [left, bottom], [left, top] ]
+                        ]
+                     },
+                    "properties": {}
+                 }
+        if colour:
+            # >>> "%0.2x" % 1
+            # '01'
+            # >>> "%0.2x" % 234
+            # 'ea'
+            feature['properties']['colour'] = '#' + 3 * ("%0.2x" % colour)
+        return feature
     
     feature_collection = {
                             'features' : [],
@@ -55,8 +70,15 @@ def img2features(image):
     # This is a slow but straightforward way of going about it:
     for x in range(image.size[0]):
         for y in range(image.size[1]):
-            if pixels[x,y] == 0:
-                feature_collection['features'].append(px2feature((x,y)))
+            colour = pixels[x,y]
+            if colours:
+                # We are interested in all pixels that have a shade of grey
+                if colour != 255:
+                    feature_collection['features'].append(px2feature((x,y), colour))
+            else:
+                # We are only interested in black pixels
+                if colour == 0:
+                    feature_collection['features'].append(px2feature((x,y)))
     
     return json.dumps(feature_collection, indent=4)
 
@@ -76,6 +98,7 @@ def find_rainclouds():
     png_file_path  = os.path.join(LATEST_GFS_FOLDER, "GFS_half_degree.%s.pwat.png" % LATEST_GFS_SLUG)
     
     png_clouds_greyscale_file_path    = os.path.join(LATEST_GFS_FOLDER, "GFS_half_degree.clouds_greyscale.%s.pwat.png" % LATEST_GFS_SLUG)
+    png_clouds_greymasked_file_path   = os.path.join(LATEST_GFS_FOLDER, "GFS_half_degree.clouds_greymasked.%s.pwat.png" % LATEST_GFS_SLUG)
     png_cloud_mask_file_path          = os.path.join(LATEST_GFS_FOLDER, "GFS_half_degree.cloud_mask.%s.pwat.png" % LATEST_GFS_SLUG)
     png_cloud_mask_extruded_file_path = os.path.join(LATEST_GFS_FOLDER, "GFS_half_degree.cloud_mask.extruded.%s.pwat.png" % LATEST_GFS_SLUG)
     png_cloud_mask_combined_file_path = os.path.join(LATEST_GFS_FOLDER, "GFS_half_degree.cloud_mask.combined.%s.pwat.png" % LATEST_GFS_SLUG)
@@ -83,6 +106,7 @@ def find_rainclouds():
     russia_layer = Image.open(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'russia.png'))
     
     rainbow_json_file_path = os.path.join(LATEST_GFS_FOLDER, "rainbows.%s.json" % LATEST_GFS_SLUG)
+    clouds_json_file_path = os.path.join(LATEST_GFS_FOLDER, "clouds.%s.json" % LATEST_GFS_SLUG)
     
     if not os.path.exists(grib_file_path):
         logger.debug("expected GRIB file not foud")
@@ -132,8 +156,10 @@ def find_rainclouds():
     logger.debug("Converting data to color, and writing it to canvas")
     cloud_layer = Image.new("L", (ni, nj))
     cloud_layer.putdata(map(prec2color, data))
+    
+    cloud_layer_greyscale = cloud_layer
     # Intermediary debug image:
-    # cloud_layer.save(png_clouds_greyscale_file_path)
+    # cloud_layer_greyscale.save(png_clouds_greyscale_file_path)
     
     
     logger.debug("Pushing the contrast and then tresholding the clouds")
@@ -141,6 +167,8 @@ def find_rainclouds():
     cloud_layer = enhancer.enhance(8)
     threshold = 191  
     cloud_layer = cloud_layer.point(lambda p: p > threshold and 255)  
+    
+    cloud_layer_greyscale.paste(cloud_layer, (0,0), cloud_layer)
     
     logger.debug("Calculating the solar altitudes for all combinations of latitude and longitude")
     altitudes = []
@@ -211,7 +239,12 @@ def find_rainclouds():
     logger.debug("Writing image file")
     cloud_layer.save(png_file_path)
     logger.debug("Written")
-    
+
+    cloud_layer_greyscale.paste(ImageOps.invert(sun_mask), (0, 0), ImageOps.invert(sun_mask))
+    cloud_layer_greyscale.paste(russia_layer, (0, 0), russia_layer)
+    with open(clouds_json_file_path , 'w') as f:
+        f.write(img2features(cloud_layer_greyscale, colours=True))
+    cloud_layer_greyscale.save(png_clouds_greymasked_file_path)
 
 if __name__ == '__main__':
     find_rainclouds()
