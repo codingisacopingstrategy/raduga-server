@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import os
 import re
 import sys
@@ -52,3 +54,18 @@ def get_latest_elektro_l_url():
 LATEST_PREC_FOLDER, LATEST_PREC_SLUG = get_latest_prec_folder()
 LATEST_GFS_FOLDER, LATEST_GFS_SLUG   = get_latest_gfs_folder()
 
+"""
+APP SETTINGS
+"""
+
+# By default, DEBUG=False, except on Mac OS X (because that’s most likely a development machine)
+# You can override this setting by creating a file called local_settings.py
+
+DEBUG = False
+if sys.platform == "darwin":
+    DEBUG = True
+
+try:
+    from local_settings import *
+except ImportError:
+    pass

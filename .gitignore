@@ -1,5 +1,7 @@
-fabfile.py
+local_settings.py
 latitudeslongitudesperpixel.json
+
+fabfile.py
 
 # LibreOffice Lock #
 .~lock.*
