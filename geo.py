@@ -4,6 +4,10 @@ import math
 
 from settings import *
 
+"""
+These functions allow to deal with an OpenStreetMap style map
+"""
+
 def deg2px(lat_deg, lon_deg, zoom=4):
     lat_rad = math.radians(lat_deg)
     n = 2.0 ** zoom * 256
@@ -23,3 +27,17 @@ def px2deg(x, y, zoom=4):
     xtile = x / float(TILE_SIZE) + 0.5 / TILE_SIZE
     ytile = y / float(TILE_SIZE) + 0.5 / TILE_SIZE
     return num2deg(xtile, ytile, zoom)
+
+"""
+These functions deal with the data we get from the Global Forecast system:
+
+the grids origin 0.0E, 90.0N
+distance between grid points: 0.5 deg lon, 0.5 deg lat
+number of grid points W-E: 720, N-S: 361
+"""
+
+def point_to_position(point):
+    return (int(point[0] * .5), int(point[1] * -.5 + 90))
+
+def position_to_point(position):
+    return (int(position[0] * 2), int((position[1] - 90) * -2))

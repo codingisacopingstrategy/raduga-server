@@ -1,0 +1,107 @@
+[
+    {
+        "href_en": "http://en.wikipedia.org/wiki/Alexeyevka,_Belgorod_Oblast", 
+        "name_ru": "Алексеевка", 
+        "name_en": "Alexeyevka", 
+        "lat": 50.633, 
+        "lon": 38.7
+    }, 
+    {
+        "href_en": "http://en.wikipedia.org/wiki/Asha_(town)", 
+        "name_ru": "Аша", 
+        "name_en": "Asha", 
+        "lat": 54.983, 
+        "lon": 57.283
+    }, 
+    {
+        "href_en": "http://en.wikipedia.org/wiki/Budyonnovsk", 
+        "name_ru": "Будённовск", 
+        "name_en": "Budyonnovsk", 
+        "lat": 44.78389, 
+        "lon": 44.16583
+    }, 
+    {
+        "href_en": "http://en.wikipedia.org/wiki/Cheboksary", 
+        "name_ru": "Чебоксары", 
+        "name_en": "Cheboksary", 
+        "lat": 56.11028, 
+        "lon": 47.25111
+    }, 
+    {
+        "href_en": "http://en.wikipedia.org/wiki/Kharabali", 
+        "name_ru": "Харабали", 
+        "name_en": "Kharabali", 
+        "lat": 47.405, 
+        "lon": 47.25556
+    }, 
+    {
+        "href_en": "http://en.wikipedia.org/wiki/Kotovsk,_Russia", 
+        "name_ru": "Котовск", 
+        "name_en": "Kotovsk", 
+        "lat": 52.583, 
+        "lon": 41.517
+    }, 
+    {
+        "href_en": "http://en.wikipedia.org/wiki/Mariinsky_Posad", 
+        "name_ru": "Мариинский Посад", 
+        "name_en": "Mariinsky Posad", 
+        "lat": 56.1, 
+        "lon": 47.717
+    }, 
+    {
+        "href_en": "http://en.wikipedia.org/wiki/Michurinsk", 
+        "name_ru": "Мичуринск", 
+        "name_en": "Michurinsk", 
+        "lat": 52.883, 
+        "lon": 40.483
+    }, 
+    {
+        "href_en": "http://en.wikipedia.org/wiki/Novocheboksarsk", 
+        "name_ru": "Новочебоксарск", 
+        "name_en": "Novocheboksarsk", 
+        "lat": 56.117, 
+        "lon": 47.483
+    }, 
+    {
+        "href_en": "http://en.wikipedia.org/wiki/Rasskazovo", 
+        "name_ru": "Рассказово", 
+        "name_en": "Rasskazovo", 
+        "lat": 52.667, 
+        "lon": 41.883
+    }, 
+    {
+        "href_en": "http://en.wikipedia.org/wiki/Spassk,_Penza_Oblast", 
+        "name_ru": "Спасск", 
+        "name_en": "Spassk", 
+        "lat": 53.933, 
+        "lon": 43.183
+    }, 
+    {
+        "href_en": "http://en.wikipedia.org/wiki/Surovikino", 
+        "name_ru": "Суровикино", 
+        "name_en": "Surovikino", 
+        "lat": 48.6, 
+        "lon": 42.85
+    }, 
+    {
+        "href_en": "http://en.wikipedia.org/wiki/Tambov", 
+        "name_ru": "Тамбов", 
+        "name_en": "Tambov", 
+        "lat": 52.717, 
+        "lon": 41.433
+    }, 
+    {
+        "href_en": "http://en.wikipedia.org/wiki/Urzhum,_Urzhumsky_District,_Kirov_Oblast", 
+        "name_ru": "Уржум", 
+        "name_en": "Urzhum", 
+        "lat": 57.117, 
+        "lon": 50
+    }, 
+    {
+        "href_en": "http://en.wikipedia.org/wiki/Yadrin", 
+        "name_ru": "Ядрин", 
+        "name_en": "Yadrin", 
+        "lat": 55.933, 
+        "lon": 46.2
+    }
+]

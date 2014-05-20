@@ -40,11 +40,15 @@ def get_latest_gfs_folder():
 
 def get_latest_rainbows_url():
     slug = get_latest_gfs_folder()[1]
-    return "/static/gfs/" + slug + "/rainbows." + slug + ".json"
+    return "/static/gfs/" + slug + "/" + slug + ".rainbows.json"
 
 def get_latest_clouds_url():
     slug = get_latest_gfs_folder()[1]
-    return "/static/gfs/" + slug + "/clouds." + slug + ".json"
+    return "/static/gfs/" + slug + "/" + slug + ".clouds.json"
+
+def get_latest_rainbow_cities_url():
+    slug = get_latest_gfs_folder()[1]
+    return "/static/gfs/" + slug + "/" + slug + ".rainbow_cities.json"
 
 def get_latest_elektro_l_url():
     global ELEKTRO_L_FOLDER

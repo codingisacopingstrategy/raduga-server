@@ -105,8 +105,8 @@ def find_rainclouds():
     
     russia_layer = Image.open(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'russia.png'))
     
-    rainbow_json_file_path = os.path.join(LATEST_GFS_FOLDER, "rainbows.%s.json" % LATEST_GFS_SLUG)
-    clouds_json_file_path = os.path.join(LATEST_GFS_FOLDER, "clouds.%s.json" % LATEST_GFS_SLUG)
+    rainbow_json_file_path = os.path.join(LATEST_GFS_FOLDER, "%s.rainbows.json" % LATEST_GFS_SLUG)
+    clouds_json_file_path = os.path.join(LATEST_GFS_FOLDER, "%s.clouds.json" % LATEST_GFS_SLUG)
     
     if not os.path.exists(grib_file_path):
         logger.debug("expected GRIB file not foud")

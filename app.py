@@ -36,6 +36,10 @@ def latest_rainbows():
 def latest_clouds():
     return redirect(get_latest_clouds_url())
 
+@app.route("/latest/rainbow_cities.json")
+def latest_rainbow_cities():
+    return redirect(get_latest_rainbow_cities_url())
+
 @app.route("/hq/")
 def hq():
     logs = db.log.find()
