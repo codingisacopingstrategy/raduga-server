@@ -150,7 +150,7 @@ eve_settings = {
             'schema': photos_schema,
        },
     },
-    'MONGO_DBNAME': 'photos',
+    'MONGO_DBNAME': 'raduga',
     'RESOURCE_METHODS': ['GET', 'POST'],
     'PUBLIC_METHODS': ['GET']
 }

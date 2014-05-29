@@ -13,7 +13,7 @@ from settings import *
 app = Flask(__name__)
 
 client = pymongo.MongoClient()
-db = client.photos
+db = client.raduga
 
 # These static files should be served by the web server
 @app.route('/tiles/<path:filename>')

@@ -107,7 +107,7 @@ if DEBUG:
     
     logger.addHandler(ch)
 else:
-    logger.addHandler(MongoHandler.to(db='photos', collection='log'))
+    logger.addHandler(MongoHandler.to(db='raduga', collection='log'))
 
 """
 Copyright (c) 2009, Andrei Savu. All rights reserved.
