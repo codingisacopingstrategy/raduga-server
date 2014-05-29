@@ -51,5 +51,14 @@ def find_rainbow_cities(GFS_SLUG):
         f.write(json.dumps(rainbow_cities, indent=4, ensure_ascii=False))
 
 if __name__ == '__main__':
-    find_rainbow_cities(LATEST_GFS_SLUG)
-    
+    logger.debug('looking for rainbow-forecasts for which to find cities')
+    for f in sorted(os.listdir(GFS_FOLDER), reverse=True):
+        slug = f
+        path = os.path.join(GFS_FOLDER, slug)
+        if re.match(r'\d{10}', slug) and os.path.isdir(path):
+            if len(glob(os.path.join(path, '*rainbow_cities.json'))) > 0:
+                logger.debug("encountered already processed rainbow-forecast %s, stop searching for rainbow-forecasts" % slug)
+                break
+            if len(glob(os.path.join(path, '*pwat.grib'))) > 0:
+                logger.debug("encountered cityless rainbow-forecast %s, start processing" % slug)
+                find_rainbow_cities(slug)
