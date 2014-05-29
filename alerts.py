@@ -67,5 +67,7 @@ if __name__ == "__main__":
         logger.debug("no future rainbow city predictions found, aborting. rainbow alerts only sent on future predictions. run the script with a specific slug as argument to override")
         sys.exit()
     
-    rainbow_prediction_alert(forecasts[-1]['slug'])
+    slug = forecasts[-1]['slug']
+    logger.debug("%s future rainbow city prediction(s) found, using the most recent one, %s" % (len(forecasts), slug))
+    rainbow_prediction_alert(slug)
     
