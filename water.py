@@ -40,6 +40,32 @@ def img2features(image, colours=False):
     Given a grey-scale image, return a Geo-JSON string, that for each grey pixel
     represents a square point on the map, with the grey colour as a property.
     """
+    
+    rainbow_colours = [[255, 0, 0], [255, 127, 0], [255, 255, 0], [0, 255, 0], [0, 0, 255], [75, 0, 130], [143, 0, 255]]
+    
+    def blend_colours(colour_1, colour_2, percentage):
+        new_colour =[]
+        for i in range(3):
+            new_colour.append( int( colour_1[i] + (colour_2[i] - colour_1[i]) * percentage * .01 ) )
+        return "rgb(" + ', '.join(map(str, new_colour)) + ")"
+    
+    
+    def gradient_stops(lon):
+        """
+        rainbow value inbetween 0, 700
+        corresponds to lon 25, 192
+        """
+        
+        index =  (int(lon) - 25) * 4
+    
+        start_colour  = rainbow_colours[index / 100]
+        end_colour    = rainbow_colours[(index / 100) + 1]
+    
+        percentage_start = index % 100
+        percentage_stop  = percentage_start + 2
+    
+        return( blend_colours(start_colour, end_colour, percentage_start), blend_colours(start_colour, end_colour, percentage_stop) )
+    
     def px2feature(px, colour=None):
         left    = px[0] * .5
         right   = left + 0.5
@@ -59,6 +85,8 @@ def img2features(image, colours=False):
             # >>> "%0.2x" % 234
             # 'ea'
             feature['properties']['colour'] = '#' + 3 * ("%0.2x" % colour)
+        else:
+            feature['properties']['gradient_start'], feature['properties']['gradient_stop'] = gradient_stops(left)
         return feature
     
     feature_collection = {

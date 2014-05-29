@@ -30,7 +30,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 68, 0)", 
+                "gradient_start": "rgb(255, 66, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -61,7 +64,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 78, 0)", 
+                "gradient_start": "rgb(255, 76, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -92,7 +98,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 78, 0)", 
+                "gradient_start": "rgb(255, 76, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -123,7 +132,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 83, 0)", 
+                "gradient_start": "rgb(255, 81, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -154,7 +166,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 83, 0)", 
+                "gradient_start": "rgb(255, 81, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -185,7 +200,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 83, 0)", 
+                "gradient_start": "rgb(255, 81, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -216,7 +234,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 88, 0)", 
+                "gradient_start": "rgb(255, 86, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -247,7 +268,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 88, 0)", 
+                "gradient_start": "rgb(255, 86, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -278,7 +302,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 93, 0)", 
+                "gradient_start": "rgb(255, 91, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -309,7 +336,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 93, 0)", 
+                "gradient_start": "rgb(255, 91, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -340,7 +370,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 93, 0)", 
+                "gradient_start": "rgb(255, 91, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -371,7 +404,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 93, 0)", 
+                "gradient_start": "rgb(255, 91, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -402,7 +438,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 99, 0)", 
+                "gradient_start": "rgb(255, 96, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -433,7 +472,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 99, 0)", 
+                "gradient_start": "rgb(255, 96, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -464,7 +506,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 99, 0)", 
+                "gradient_start": "rgb(255, 96, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -495,7 +540,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 99, 0)", 
+                "gradient_start": "rgb(255, 96, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -526,7 +574,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 99, 0)", 
+                "gradient_start": "rgb(255, 96, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -557,7 +608,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 104, 0)", 
+                "gradient_start": "rgb(255, 101, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -588,7 +642,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 104, 0)", 
+                "gradient_start": "rgb(255, 101, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -619,7 +676,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 104, 0)", 
+                "gradient_start": "rgb(255, 101, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -650,7 +710,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 104, 0)", 
+                "gradient_start": "rgb(255, 101, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -681,7 +744,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 104, 0)", 
+                "gradient_start": "rgb(255, 101, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -712,7 +778,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 109, 0)", 
+                "gradient_start": "rgb(255, 106, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -743,7 +812,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 109, 0)", 
+                "gradient_start": "rgb(255, 106, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -774,7 +846,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 109, 0)", 
+                "gradient_start": "rgb(255, 106, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -805,7 +880,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 109, 0)", 
+                "gradient_start": "rgb(255, 106, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -836,7 +914,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 114, 0)", 
+                "gradient_start": "rgb(255, 111, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -867,7 +948,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 114, 0)", 
+                "gradient_start": "rgb(255, 111, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -898,7 +982,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 114, 0)", 
+                "gradient_start": "rgb(255, 111, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -929,7 +1016,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 114, 0)", 
+                "gradient_start": "rgb(255, 111, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -960,7 +1050,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 114, 0)", 
+                "gradient_start": "rgb(255, 111, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -991,7 +1084,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 119, 0)", 
+                "gradient_start": "rgb(255, 116, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -1022,7 +1118,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 119, 0)", 
+                "gradient_start": "rgb(255, 116, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -1053,7 +1152,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 119, 0)", 
+                "gradient_start": "rgb(255, 116, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -1084,7 +1186,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 119, 0)", 
+                "gradient_start": "rgb(255, 116, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -1115,7 +1220,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 124, 0)", 
+                "gradient_start": "rgb(255, 121, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -1146,7 +1254,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 129, 0)", 
+                "gradient_start": "rgb(255, 127, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -1177,7 +1288,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 129, 0)", 
+                "gradient_start": "rgb(255, 127, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -1208,7 +1322,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 129, 0)", 
+                "gradient_start": "rgb(255, 127, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -1239,7 +1356,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 134, 0)", 
+                "gradient_start": "rgb(255, 132, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -1270,7 +1390,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 134, 0)", 
+                "gradient_start": "rgb(255, 132, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -1301,7 +1424,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 134, 0)", 
+                "gradient_start": "rgb(255, 132, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -1332,7 +1458,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 139, 0)", 
+                "gradient_start": "rgb(255, 137, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -1363,7 +1492,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 144, 0)", 
+                "gradient_start": "rgb(255, 142, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -1394,7 +1526,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 144, 0)", 
+                "gradient_start": "rgb(255, 142, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -1425,7 +1560,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 155, 0)", 
+                "gradient_start": "rgb(255, 152, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -1456,7 +1594,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 155, 0)", 
+                "gradient_start": "rgb(255, 152, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -1487,7 +1628,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 160, 0)", 
+                "gradient_start": "rgb(255, 157, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -1518,7 +1662,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 160, 0)", 
+                "gradient_start": "rgb(255, 157, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -1549,7 +1696,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 160, 0)", 
+                "gradient_start": "rgb(255, 157, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -1580,7 +1730,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 160, 0)", 
+                "gradient_start": "rgb(255, 157, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -1611,7 +1764,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 160, 0)", 
+                "gradient_start": "rgb(255, 157, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -1642,7 +1798,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 160, 0)", 
+                "gradient_start": "rgb(255, 157, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -1673,7 +1832,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 160, 0)", 
+                "gradient_start": "rgb(255, 157, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -1704,7 +1866,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 160, 0)", 
+                "gradient_start": "rgb(255, 157, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -1735,7 +1900,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 160, 0)", 
+                "gradient_start": "rgb(255, 157, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -1766,7 +1934,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 165, 0)", 
+                "gradient_start": "rgb(255, 162, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -1797,7 +1968,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 165, 0)", 
+                "gradient_start": "rgb(255, 162, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -1828,7 +2002,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 165, 0)", 
+                "gradient_start": "rgb(255, 162, 0)"
+            }
         }, 
         {
             "geometry": {
@@ -1859,7 +2036,10 @@
                 ]
             }, 
             "type": "Feature", 
-            "properties": {}
+            "properties": {
+                "gradient_stop": "rgb(255, 165, 0)", 
+                "gradient_start": "rgb(255, 162, 0)"
+            }
         }
     ]
 }
