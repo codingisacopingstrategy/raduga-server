@@ -5,14 +5,14 @@ import os
 
 # Dependencies: Flask + PIL or Pillow
 from flask import Flask, send_from_directory, redirect, render_template
-from pymongo import MongoClient
+import pymongo
 
 # Local imports
 from settings import *
 
 app = Flask(__name__)
 
-client = MongoClient()
+client = pymongo.MongoClient()
 db = client.photos
 
 # These static files should be served by the web server

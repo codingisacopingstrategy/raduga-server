@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 
+<link rel="stylesheet" href="/static/hq/reset.css" />
+<link rel="stylesheet" href="/static/hq/hq.css" />
+
+<table>
 {% for log in logs %}
-{{ log.msg }}<br/>
+<tr class="{{ log.levelname }}"><td>{{ log.pathname }}</td><td content="{{ log.time.strftime('%Y-%m-%dT%H:%M:%S%z') }}">{{ log.time.strftime('%H:%M %m %b') }}</td><td class="lineno">{{ '%04d' % log.lineno }}</td><td>{{ log.msg }}</td></tr>
 {% endfor %}
+</table>

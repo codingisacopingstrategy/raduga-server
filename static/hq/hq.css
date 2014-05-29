@@ -1,0 +1,10 @@
+body {
+    font-family: 'NotCourierSans', monospace;
+    padding: 8px;
+}
+td {
+    padding: 0 2px;
+}
+table {
+    width: 100%
+}
