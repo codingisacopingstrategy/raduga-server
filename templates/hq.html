@@ -4,6 +4,30 @@
 <link rel="stylesheet" href="/static/hq/reset.css" />
 <link rel="stylesheet" href="/static/hq/hq.css" />
 
+<div>
+    <h3>Upcoming predictions</h3>
+    <dl>
+    {% for forecast in forecasts if forecast.future %}
+        <dt>{{ forecast.date.strftime('%H:%M %d %b') }}</dt>
+        <dd><a href="/static/gfs/{{ forecast.slug }}/{{ forecast.slug }}.rainbows.json">rainbows.json</a></dd>
+        <dd><a href="/static/gfs/{{ forecast.slug }}/{{ forecast.slug }}.clouds.json">clouds.json</a></dd>
+        <dd><a href="/static/gfs/{{ forecast.slug }}/{{ forecast.slug }}.rainbow_cities.json">rainbow_cities.json</a></dd>
+    {% endfor %}
+    </dl>
+</div>
+
+<div>
+    <h3>Most recent prediction</h3>
+    <dl>
+    {% for forecast in forecasts if not forecast.future %}
+        <dt>{{ forecast.date.strftime('%H:%M %d %b') }}</dt>
+        <dd><a href="/static/gfs/{{ forecast.slug }}/{{ forecast.slug }}.rainbows.json">rainbows.json</a></dd>
+        <dd><a href="/static/gfs/{{ forecast.slug }}/{{ forecast.slug }}.clouds.json">clouds.json</a></dd>
+        <dd><a href="/static/gfs/{{ forecast.slug }}/{{ forecast.slug }}.rainbow_cities.json">rainbow_cities.json</a></dd>
+    {% endfor %}
+    </dl>
+</div>
+
 <table>
 {% for log in logs %}
 <tr class="{{ log.levelname }}"><td>{{ log.pathname }}</td><td content="{{ log.time.strftime('%Y-%m-%dT%H:%M:%S%z') }}">{{ log.time.strftime('%H:%M %d %b') }}</td><td class="lineno">{{ '%04d' % log.lineno }}</td><td>{{ log.msg }}</td></tr>

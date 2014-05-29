@@ -4,6 +4,9 @@ import os
 import re
 import sys
 from glob import glob
+from datetime import datetime
+
+import pytz
 
 """
 WEATHER RESOURCES SETTINGS
@@ -39,16 +42,37 @@ def get_latest_gfs_folder():
         if re.match(r'\d{10}', slug) and os.path.isdir(path) and len(glob(os.path.join(path, '*pwat.grib'))) > 0:
             return path, slug
 
+def get_forecast_info():
+    forecast_info = []
+    for f in sorted(os.listdir(GFS_FOLDER), reverse=True):
+        slug = f
+        path = os.path.join(GFS_FOLDER, slug)
+        if re.match(r'\d{10}', slug) and os.path.isdir(path) and len(glob(os.path.join(path, '*pwat.grib'))) > 0:
+            slug_date = datetime.strptime(slug, "%Y%m%d%H")
+            slug_date = slug_date.replace(tzinfo=pytz.UTC)
+            forecast = {
+                         "slug": slug,
+                         "date": slug_date,
+                        }
+            if slug_date > datetime.now(pytz.utc):
+                forecast['future'] = True
+                forecast_info.append(forecast)
+            else:
+                forecast['future'] = False
+                forecast_info.append(forecast)
+                break
+    return forecast_info
+
 def get_latest_rainbows_url():
-    slug = get_latest_gfs_folder()[1]
+    slug = get_forecast_info()[-1]['slug']
     return "/static/gfs/" + slug + "/" + slug + ".rainbows.json"
 
 def get_latest_clouds_url():
-    slug = get_latest_gfs_folder()[1]
+    slug = get_forecast_info()[-1]['slug']
     return "/static/gfs/" + slug + "/" + slug + ".clouds.json"
 
 def get_latest_rainbow_cities_url():
-    slug = get_latest_gfs_folder()[1]
+    slug = get_forecast_info()[-1]['slug']
     return "/static/gfs/" + slug + "/" + slug + ".rainbow_cities.json"
 
 def get_latest_elektro_l_url():

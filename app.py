@@ -43,7 +43,8 @@ def latest_rainbow_cities():
 @app.route("/hq/")
 def hq():
     logs = db.log.find()
-    return render_template("hq.html", logs=logs)
+    forecasts = get_forecast_info()
+    return render_template("hq.html", logs=logs, forecasts=forecasts)
 
 if __name__ == '__main__':
     app.run(debug=True)
