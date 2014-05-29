@@ -61,7 +61,7 @@ def fetch_gfs():
         res, res6, res9 = None, None, None
         
         logger.debug("rounding %s hours UTC at %s to %s hours UTC at %s" % 
-                     (d.strftime("%H"), d.strftime("%m"), d_rounded.strftime("%H"), d_rounded.strftime("%m")))
+                     (d.strftime("%H"), d.strftime("%d"), d_rounded.strftime("%H"), d_rounded.strftime("%m")))
 
         d6 = d_rounded + six_hours
         d9 = d_rounded + nine_hours
