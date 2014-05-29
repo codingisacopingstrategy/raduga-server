@@ -16,17 +16,19 @@ https://github.com/cambecc/earth/blob/e7be4d6810f211217956daf544111502fc57a868/p
 
 import subprocess
 from datetime import datetime
+from glob import glob
 import math
 import json
 import sys
 import os
+import re
 
 import pytz
 import Pysolar
 import dateutil.parser
 from PIL import Image, ImageOps, ImageFilter, ImageEnhance
 
-from settings import LATEST_GFS_FOLDER, LATEST_GFS_SLUG
+from settings import GFS_FOLDER, LATEST_GFS_SLUG
 from utils import logger
 
 
@@ -111,30 +113,31 @@ def img2features(image, colours=False):
     return json.dumps(feature_collection, indent=4)
 
 
-def find_rainclouds():
-    if not LATEST_GFS_FOLDER:
+def find_rainclouds(THIS_GFS_SLUG):
+    THIS_GFS_FOLDER = os.path.join(GFS_FOLDER, THIS_GFS_SLUG)
+    if not THIS_GFS_FOLDER:
         logger.debug("no grib files found. Run fetch.py?")
         return False
     
-    logger.debug("starting cloud analysis with grib information from %s" % LATEST_GFS_SLUG)
+    logger.debug("starting cloud analysis with grib information from %s" % THIS_GFS_SLUG)
     
-    DATE = datetime.strptime(LATEST_GFS_SLUG, "%Y%m%d%H")       # strptime can’t handle timezones, what up with that?
+    DATE = datetime.strptime(THIS_GFS_SLUG, "%Y%m%d%H")       # strptime can’t handle timezones, what up with that?
     DATE = DATE.replace(tzinfo=pytz.UTC)                        # we know it’s UTC so we add that info http://stackoverflow.com/questions/7065164/how-to-make-an-unaware-datetime-timezone-aware-in-python
 
-    grib_file_path = os.path.join(LATEST_GFS_FOLDER, "GFS_half_degree.%s.pwat.grib" % LATEST_GFS_SLUG)
-    json_file_path = os.path.join(LATEST_GFS_FOLDER, "GFS_half_degree.%s.pwat.json" % LATEST_GFS_SLUG)
-    png_file_path  = os.path.join(LATEST_GFS_FOLDER, "GFS_half_degree.%s.pwat.png" % LATEST_GFS_SLUG)
+    grib_file_path = os.path.join(THIS_GFS_FOLDER, "GFS_half_degree.%s.pwat.grib" % THIS_GFS_SLUG)
+    json_file_path = os.path.join(THIS_GFS_FOLDER, "GFS_half_degree.%s.pwat.json" % THIS_GFS_SLUG)
+    png_file_path  = os.path.join(THIS_GFS_FOLDER, "GFS_half_degree.%s.pwat.png" % THIS_GFS_SLUG)
     
-    png_clouds_greyscale_file_path    = os.path.join(LATEST_GFS_FOLDER, "GFS_half_degree.clouds_greyscale.%s.pwat.png" % LATEST_GFS_SLUG)
-    png_clouds_greymasked_file_path   = os.path.join(LATEST_GFS_FOLDER, "GFS_half_degree.clouds_greymasked.%s.pwat.png" % LATEST_GFS_SLUG)
-    png_cloud_mask_file_path          = os.path.join(LATEST_GFS_FOLDER, "GFS_half_degree.cloud_mask.%s.pwat.png" % LATEST_GFS_SLUG)
-    png_cloud_mask_extruded_file_path = os.path.join(LATEST_GFS_FOLDER, "GFS_half_degree.cloud_mask.extruded.%s.pwat.png" % LATEST_GFS_SLUG)
-    png_cloud_mask_combined_file_path = os.path.join(LATEST_GFS_FOLDER, "GFS_half_degree.cloud_mask.combined.%s.pwat.png" % LATEST_GFS_SLUG)
+    png_clouds_greyscale_file_path    = os.path.join(THIS_GFS_FOLDER, "GFS_half_degree.clouds_greyscale.%s.pwat.png" % THIS_GFS_SLUG)
+    png_clouds_greymasked_file_path   = os.path.join(THIS_GFS_FOLDER, "GFS_half_degree.clouds_greymasked.%s.pwat.png" % THIS_GFS_SLUG)
+    png_cloud_mask_file_path          = os.path.join(THIS_GFS_FOLDER, "GFS_half_degree.cloud_mask.%s.pwat.png" % THIS_GFS_SLUG)
+    png_cloud_mask_extruded_file_path = os.path.join(THIS_GFS_FOLDER, "GFS_half_degree.cloud_mask.extruded.%s.pwat.png" % THIS_GFS_SLUG)
+    png_cloud_mask_combined_file_path = os.path.join(THIS_GFS_FOLDER, "GFS_half_degree.cloud_mask.combined.%s.pwat.png" % THIS_GFS_SLUG)
     
     russia_layer = Image.open(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'russia.png'))
     
-    rainbow_json_file_path = os.path.join(LATEST_GFS_FOLDER, "%s.rainbows.json" % LATEST_GFS_SLUG)
-    clouds_json_file_path = os.path.join(LATEST_GFS_FOLDER, "%s.clouds.json" % LATEST_GFS_SLUG)
+    rainbow_json_file_path = os.path.join(THIS_GFS_FOLDER, "%s.rainbows.json" % THIS_GFS_SLUG)
+    clouds_json_file_path = os.path.join(THIS_GFS_FOLDER, "%s.clouds.json" % THIS_GFS_SLUG)
     
     if not os.path.exists(grib_file_path):
         logger.debug("expected GRIB file not foud")
@@ -275,5 +278,15 @@ def find_rainclouds():
     cloud_layer_greyscale.save(png_clouds_greymasked_file_path)
 
 if __name__ == '__main__':
-    find_rainclouds()
+    logger.debug('looking for forecasts to process')
+    for f in sorted(os.listdir(GFS_FOLDER), reverse=True):
+        slug = f
+        path = os.path.join(GFS_FOLDER, slug)
+        if re.match(r'\d{10}', slug) and os.path.isdir(path):
+            if len(glob(os.path.join(path, '*pwat.png'))) > 0:
+                logger.debug("encountered already processed forecast %s, stop searching for forecasts" % slug)
+                break
+            if len(glob(os.path.join(path, '*pwat.grib'))) > 0:
+                logger.debug("encountered forecast %s, start processing" % slug)
+                find_rainclouds(slug)
 
