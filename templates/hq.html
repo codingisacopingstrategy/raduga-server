@@ -4,6 +4,8 @@
 <link rel="stylesheet" href="/static/hq/reset.css" />
 <link rel="stylesheet" href="/static/hq/hq.css" />
 
+<script src="../static/hq/js/jquery-1.11.1.js"></script>
+<script src="../static/hq/js/moment-with-langs.js"></script>
 <div>
     <h3>Upcoming predictions</h3>
     <dl>
@@ -30,6 +32,13 @@
 
 <table>
 {% for log in logs %}
-<tr class="{{ log.levelname }}"><td>{{ log.pathname }}</td><td content="{{ log.time.strftime('%Y-%m-%dT%H:%M:%S%z') }}">{{ log.time.strftime('%H:%M %d %b') }}</td><td class="lineno">{{ '%04d' % log.lineno }}</td><td>{{ log.msg }}</td></tr>
+<tr class="{{ log.levelname }}"><td>{{ log.pathname }}</td><td class="time" content="{{ log.time.strftime('%Y-%m-%dT%H:%M:%S%z') }}">{{ log.time.strftime('%H:%M %d %b') }}</td><td class="lineno">{{ '%04d' % log.lineno }}</td><td>{{ log.msg }}</td></tr>
 {% endfor %}
 </table>
+
+<script>
+    // relative time
+    $("td.time").each(function(i, el) {
+        $(el).text(moment($(el).attr("content")).fromNow());
+    });
+</script>

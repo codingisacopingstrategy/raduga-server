@@ -42,7 +42,7 @@ def latest_rainbow_cities():
 
 @app.route("/hq/")
 def hq():
-    logs = db.log.find()
+    logs = db.log.find().sort("$natural", pymongo.DESCENDING)
     forecasts = get_forecast_info()
     return render_template("hq.html", logs=logs, forecasts=forecasts)
 
