@@ -24,6 +24,15 @@ def base_static(filename):
 def readme():
     return send_from_directory(app.root_path, 'README.txt')
 
+# Note: this will always serve the same file
+# Should be used in collaboration with nginx, that is, with a try -f
+# block: nginx tries to find an actual elektro l image for the
+# provided time-slug; if it doesn’t exist flask will redirect to the
+# `error` image. Come to think of it, nginx could do this too!
+@app.route('/static/elektro/<time_slug>_RGB.png')
+def elektro_fallback(time_slug):
+    return redirect('/static/elektro/130502_0030_10.png')
+
 @app.route("/latest/elektro-l")
 def latest_elektro():
     return redirect(get_latest_elektro_l_url())

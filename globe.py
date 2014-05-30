@@ -72,39 +72,39 @@ if __name__ == '__main__':
             d = dateutil.parser.parse(dstring)
             fetch_elektro_l(d)
     
-    """
-    # Example of using the fetch_elektro function from the globe module
-    # from within a python script:
-    
-    from datetime import timedelta, datetime
+"""
+# Example of using the fetch_elektro function from the globe module
+# from within a python script:
 
-    import pytz
-    from globe import fetch_elektro_l
-    
-    half_hour = timedelta(minutes=30)
-    # In 2013, images start the 6th of February
-    date = datetime(2013, 2, 6, 0, 0, 0, 0, pytz.UTC)
-    
-    
-    # There are 17520 half hours in 2013
-    
-    while date.year == 2013:
-        # In 2013, there happen to be no images in april 
-        if date.month == 4:
-            date = date.replace(month=5)
-        fetch_elektro_l(date)
-        date = date + half_hour
-    """
-    
-    """
-    # Example of using the pretty_globe function from a within a python script
-    
-    import os
-    from glob import glob
-    
-    from settings import ELEKTRO_L_FOLDER, ELEKTRO_L_SRC_FOLDER
-    from globe import pretty_globe
-            
-    for image_filename in glob(os.path.join(ELEKTRO_L_SRC_FOLDER, "*_RGB.jpg")):
-        pretty_globe(image_filename)
-    """
+from datetime import timedelta, datetime
+
+import pytz
+from globe import fetch_elektro_l
+
+half_hour = timedelta(minutes=30)
+# In 2013, images start the 6th of February
+date = datetime(2013, 2, 6, 0, 0, 0, 0, pytz.UTC)
+
+
+# There are 17520 half hours in 2013
+
+while date.year == 2013:
+    # In 2013, there happen to be no images in april 
+    if date.month == 4:
+        date = date.replace(month=5)
+    fetch_elektro_l(date)
+    date = date + half_hour
+"""
+
+"""
+# Example of using the pretty_globe function from a within a python script
+
+import os
+from glob import glob
+
+from settings import ELEKTRO_L_FOLDER, ELEKTRO_L_SRC_FOLDER
+from globe import pretty_globe
+        
+for image_filename in glob(os.path.join(ELEKTRO_L_SRC_FOLDER, "*_RGB.jpg")):
+    pretty_globe(image_filename)
+"""
