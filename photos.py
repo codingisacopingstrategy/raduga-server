@@ -167,6 +167,9 @@ eve_settings = {
     'DOMAIN': {
         'photos': {
             'schema': photos_schema,
+            'datasource': {
+                           "default_sort": [("created_at",-1)]
+                           }
        },
     },
     'MONGO_DBNAME': 'raduga',
