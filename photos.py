@@ -51,7 +51,7 @@ photos_schema = {
                 "schema": {
                     "type": "list",
                     "schema": {
-                        "type": "float"
+                        "type": "number"
                     }
                 }
             },
