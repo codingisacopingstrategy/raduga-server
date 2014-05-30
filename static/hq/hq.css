@@ -5,6 +5,16 @@ body {
 td {
     padding: 0 2px;
 }
+td.scriptname {
+    width: 106px;
+}
+td.time {
+    width: 145px;
+}
+td.lineno {
+    width: 53px;
+}
+
 table {
     width: 100%
 }

@@ -32,7 +32,7 @@
 
 <table>
 {% for log in logs %}
-<tr class="{{ log.levelname }}"><td>{{ log.pathname }}</td><td class="time" content="{{ log.time.strftime('%Y-%m-%dT%H:%M:%S%z') }}">{{ log.time.strftime('%H:%M %d %b') }}</td><td class="lineno">{{ '%04d' % log.lineno }}</td><td>{{ log.msg }}</td></tr>
+<tr class="{{ log.levelname }} {{ log.pathname.replace(".py","") }}"><td class="scriptname">{{ log.pathname }}</td><td class="time" content="{{ log.time.strftime('%Y-%m-%dT%H:%M:%S%z') }}">{{ log.time.strftime('%H:%M %d %b') }}</td><td class="lineno">{{ '%04d' % log.lineno }}</td><td class="message">{{ log.msg }}</td></tr>
 {% endfor %}
 </table>
 
