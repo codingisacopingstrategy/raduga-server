@@ -31,6 +31,11 @@ from PIL import Image, ImageOps, ImageFilter, ImageEnhance
 from settings import GFS_FOLDER, LATEST_GFS_SLUG
 from utils import logger
 
+try:
+    from settings import GRIB2JSON_PATH
+    grib2json = GRIB2JSON_PATH
+except ImportError:
+    grib2json = 'grib2json'
 
 def img2features(image, colours=False):
     """
@@ -114,6 +119,8 @@ def img2features(image, colours=False):
 
 
 def find_rainclouds(THIS_GFS_SLUG):
+    global grib2json
+    
     THIS_GFS_FOLDER = os.path.join(GFS_FOLDER, THIS_GFS_SLUG)
     if not THIS_GFS_FOLDER:
         logger.debug("no grib files found. Run fetch.py?")
@@ -146,9 +153,13 @@ def find_rainclouds(THIS_GFS_SLUG):
         logger.debug("corresponding JSON found, skipping JSON conversion")
     else:
         logger.debug("converting GRIB into JSON file: %s" % json_file_path)
-        pipe = subprocess.Popen(['grib2json', '-d', '-n',
+        try:
+            pipe = subprocess.Popen([grib2json, '-d', '-n',
                              '-o', json_file_path,
                              grib_file_path])
+        except OSError:
+            logger.error("`grib2json` executable not found")
+            sys.exit()
         c = pipe.wait()
         if c != 0:
             logger.error("error in JSON conversion")
