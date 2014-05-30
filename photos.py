@@ -99,6 +99,10 @@ photos_schema = {
     "updated_at": {
         "type": "string"
     },
+     "image": {
+        "type": "media",
+        "default": ""
+    },
     "urls": {
         "type": "dict",
         "schema": {
@@ -144,14 +148,19 @@ photos_schema = {
 }
 
 eve_settings = {
-    'SERVER_NAME' : 'vps40616.public.cloudvps.com',
+    'SERVER_NAME': 'vps40616.public.cloudvps.com',
+    'URL_PROTOCOL': 'http',
     'DOMAIN': {
         'photos': {
             'schema': photos_schema,
+                'datasource': {
+                    'projection': {'image': 0}  # Don’t show the base64 encoded image.
+                },
        },
     },
     'MONGO_DBNAME': 'raduga',
     'RESOURCE_METHODS': ['GET', 'POST'],
+    'ITEM_METHODS': ['GET', 'PATCH'],
     'PUBLIC_METHODS': ['GET']
 }
 
