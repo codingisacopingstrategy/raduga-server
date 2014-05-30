@@ -8,6 +8,8 @@ from datetime import datetime
 
 import pytz
 
+SERVER_NAME = '127.0.0.1:5000'
+
 """
 WEATHER RESOURCES SETTINGS
 """
@@ -17,7 +19,9 @@ TILE_SIZE = 256
 
 TILE_SERVER        = "http://{s}.tile.openweathermap.org/map/precipitation_cls/{z}/{x}/{y}.png"
 TILE_FOLDER        = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'raduga_tiles')
+STATIC_FOLDER      = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'static')
 GFS_FOLDER         = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'static', 'gfs')
+PHOTO_FOLDER         = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'static', 'photos')
 ELEKTRO_L_FOLDER         = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'static', 'elektro')
 ELEKTRO_L_SRC_FOLDER     = os.path.join(ELEKTRO_L_FOLDER, 'src')
 

@@ -1,7 +1,21 @@
+# -*- coding: utf-8 -*-
+
+import os
 import sys
+import math
 
 from eve import Eve
+from PIL import Image
 from eve.auth import TokenAuth
+from bson.objectid import ObjectId
+
+from alerts import rainbow_spotted_alert
+from settings import *
+from utils import logger
+
+from flask import request, Response, current_app as app
+from functools import wraps
+
 
 class SimpleTokenAuth(TokenAuth):
     """
@@ -148,14 +162,11 @@ photos_schema = {
 }
 
 eve_settings = {
-    'SERVER_NAME': 'vps40616.public.cloudvps.com',
+    'SERVER_NAME': SERVER_NAME,
     'URL_PROTOCOL': 'http',
     'DOMAIN': {
         'photos': {
             'schema': photos_schema,
-                'datasource': {
-                    'projection': {'image': 0}  # Don’t show the base64 encoded image.
-                },
        },
     },
     'MONGO_DBNAME': 'raduga',
@@ -164,10 +175,46 @@ eve_settings = {
     'PUBLIC_METHODS': ['GET']
 }
 
-if sys.platform == "darwin":
-    eve_settings['SERVER_NAME'] = '127.0.0.1:5000'
+def write_photo_versions(id):
+    def bounds(width):
+        """
+        The photos are viewed primarily in a scroll, on portrait devices.
+        
+        If the device is 240px wide, both landscape and portrait pictures will have a width of 240px
+        The maximum height is then calculated given that 9:16 is probably the tallest format.
+        """
+        
+        return (width, math.ceil(( width / 9.0 ) * 16))
+    
+    logger.debug("writing newly uploaded photo %s to disk" % str(id))
+    photo = app.data.driver.db.photos.find_one(ObjectId(id))
+    os.mkdir(os.path.join(PHOTO_FOLDER, id))
+    
+    im = Image.open(app.media.get(photo['image']))
+    im.save(os.path.join(PHOTO_FOLDER, id, photo['filename']))
+    
+    basename, extension = os.path.splitext(photo['filename'])
+    
+    update = {"urls": {}}
+    
+    logger.debug("writing thumbnails of %s to disk" % str(id))
+    for size, slug in [(240, "small_240"), (500, "medium_500"), (640, "medium_640"), (1024, "large_1024")]:
+        im_small = im.copy()
+        im_small.thumbnail(bounds(size), Image.ANTIALIAS)
+        filename = "%s_%s%s" % (basename, slug, extension)
+        im_small.save(os.path.join(PHOTO_FOLDER, id, filename ))
+        
+        update['urls'][slug] = 'http://' + SERVER_NAME + '/static/photos/' + id + '/' + filename
+    
+    # set the `url` fields for this photo in the database, so the app can display the photo
+    app.data.driver.db.photos.update({"id": id}, { "$set": update})
+    
+def after_update_photos(request, payload):
+    write_photo_versions(request.form['id'])
 
-app = Eve(settings=eve_settings, auth=SimpleTokenAuth)
+app = Eve(settings=eve_settings, auth=SimpleTokenAuth, static_folder=STATIC_FOLDER)
+
+app.on_post_PATCH_photos += after_update_photos
 
 if __name__ == '__main__':
     app.run(debug=True)
