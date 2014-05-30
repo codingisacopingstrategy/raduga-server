@@ -9,7 +9,7 @@ from PIL import Image
 from eve.auth import TokenAuth
 from bson.objectid import ObjectId
 
-from alerts import rainbow_spotted_alert
+# from alerts import rainbow_spotted_alert
 from settings import *
 from utils import logger
 
