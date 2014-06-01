@@ -66,7 +66,10 @@ def img2features(image, colours=False):
         index =  (int(lon) - 25) * 4
     
         start_colour  = rainbow_colours[index / 100]
-        end_colour    = rainbow_colours[(index / 100) + 1]
+        try:
+            end_colour    = rainbow_colours[(index / 100) + 1]
+        except IndexError:
+            end_colour    = rainbow_colours[6]
     
         percentage_start = index % 100
         percentage_stop  = percentage_start + 2
