@@ -132,6 +132,10 @@ photos_schema = {
                 "type": "string",
                 "required": False
             },
+            "small_320": {
+                "type": "string",
+                "required": False
+            },
             "small_240": {
                 "type": "string",
                 "required": False
@@ -201,7 +205,7 @@ def write_photo_versions(id):
     update = {"urls": {}}
     
     logger.debug("writing thumbnails of %s to disk" % str(id))
-    for size, slug in [(240, "small_240"), (500, "medium_500"), (640, "medium_640"), (1024, "large_1024")]:
+    for size, slug in [(320, "small_320"), (640, "medium_640"), (1024, "large_1024")]:
         im_small = im.copy()
         im_small.thumbnail(bounds(size), Image.ANTIALIAS)
         filename = "%s_%s%s" % (basename, slug, extension)
