@@ -213,6 +213,9 @@ def write_photo_versions(id):
         
         update['urls'][slug] = 'http://' + SERVER_NAME + '/static/photos/' + id + '/' + filename
     
+    update['urls']['original'] = 'http://' + SERVER_NAME + '/static/photos/' + id + '/' + photo['filename']
+    update['processed'] = True
+    
     # set the `url` fields for this photo in the database, so the app can display the photo
     app.data.driver.db.photos.update({"id": id}, { "$set": update})
     
