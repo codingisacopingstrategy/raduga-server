@@ -12,6 +12,7 @@ from bson.objectid import ObjectId
 # from alerts import rainbow_spotted_alert
 from settings import *
 from utils import logger
+from users import slightly_delayed_synch_users
 
 from flask import request, Response, current_app as app
 from functools import wraps
