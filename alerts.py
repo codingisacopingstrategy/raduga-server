@@ -42,7 +42,7 @@ def rainbow_prediction_alert(slug):
                 rainbow_user_ids.append(user['id'])
     
     if len(rainbow_user_ids) > 0:
-        logger.debug("%s users in rainbow areas for this forecast" % len(rainbow_user_ids))
+        logger.debug("%s user(s) in rainbow areas for this forecast" % len(rainbow_user_ids))
         send_alert({
             "channel": "raduga_predictions",
             "to_ids": rainbow_user_ids,
