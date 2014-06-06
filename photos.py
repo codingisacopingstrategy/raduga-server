@@ -28,9 +28,15 @@ class SimpleTokenAuth(TokenAuth):
     
     """
     def check_auth(self, token, allowed_roles, resource, method):
-        print "checking auth"
-        accounts = app.data.driver.db['accounts']
-        return accounts.find_one({'token': token})
+        if app.data.driver.db.users.find_one({'id': token }):
+            return True
+        else:
+            try_get_users = slightly_delayed_synch_users()
+            if not try_get_users:
+                return False
+            if app.data.driver.db.users.find_one({'id': token }):
+                return True
+            return False
 
 # Uploaded photo info needs to correspond to this schema, or it will be rejected.
 # Full example:

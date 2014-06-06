@@ -46,6 +46,7 @@ def synch_users():
         db.users.update({"id": user['id']}, user, upsert=True)
     
     db.meta.update({"subject": "users"}, {"updated": datetime.now(pytz.utc), "subject": "users"}, upsert=True)
+    return True
 
 def delayed_synch_users():
     """
@@ -60,6 +61,20 @@ def delayed_synch_users():
         return synch_users()
     
     logger.debug("requested to synch the database, but it was recently synched")
+
+def slightly_delayed_synch_users():
+    """
+    Only synch the database if the last synch is longer than 2 seconds ago
+    """
+    meta = db.meta.find_one({"subject": "users"})
+    if not meta:
+        return synch_users()
+    updated = meta['updated'].replace(tzinfo=pytz.UTC)
+    difference = datetime.now(pytz.utc) - updated
+    if difference.total_seconds() > 2:
+        return synch_users()
+    
+    return False
 
 if __name__ == "__main__":
     delayed_synch_users()
