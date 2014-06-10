@@ -9,7 +9,7 @@ from PIL import Image
 from eve.auth import TokenAuth
 from bson.objectid import ObjectId
 
-# from alerts import rainbow_spotted_alert
+from alerts import rainbow_spotted_alert
 from settings import *
 from utils import logger
 from users import slightly_delayed_synch_users
@@ -225,6 +225,7 @@ def write_photo_versions(id):
     
     # set the `url` fields for this photo in the database, so the app can display the photo
     app.data.driver.db.photos.update({"id": id}, { "$set": update})
+    rainbow_spotted_alert(photo)
     
 def after_update_photos(request, payload):
     write_photo_versions(request.form['id'])
@@ -234,4 +235,4 @@ app = Eve(settings=eve_settings, auth=SimpleTokenAuth, static_folder=STATIC_FOLD
 app.on_post_PATCH_photos += after_update_photos
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')

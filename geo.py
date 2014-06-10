@@ -5,6 +5,33 @@ import math
 from settings import *
 
 """
+Generic math functions
+"""
+
+def geo_distance(start_lat, start_long, end_lat, end_long):
+    """
+    Taken from http://stackoverflow.com/questions/8858838/need-help-calculating-geographical-distance
+    John Machin’s response
+    """
+
+    start_lat = math.radians(start_lat)
+    start_long = math.radians(start_long)
+    end_lat = math.radians(end_lat)
+    end_long = math.radians(end_long)
+
+    d_lat = math.fabs(start_lat - end_lat)
+    d_long = math.fabs(start_long - end_long)
+
+    EARTH_R = 6372.8
+
+    y = ((math.sin(start_lat)*math.sin(end_lat)) + (math.cos(start_lat)*math.cos(end_lat)*math.cos(d_long)))
+    x = math.sqrt((math.cos(end_lat)*math.sin(d_long))**2 + ( (math.cos(start_lat)*math.sin(end_lat)) - (math.sin(start_lat)*math.cos(end_lat)*math.cos(d_long)))**2)
+    c = math.atan(x/y)
+
+    return EARTH_R*c
+
+
+"""
 These functions allow to deal with an OpenStreetMap style map
 """
 
