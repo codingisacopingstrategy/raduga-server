@@ -96,7 +96,7 @@ def img2features(image, colours=False):
             # 'ea'
             feature['properties']['colour'] = '#' + 3 * ("%0.2x" % colour)
         else:
-            feature['properties']['gradient_start'], feature['properties']['gradient_stop'] = gradient_stops(left)
+            feature['properties']['gradient_stops'] = gradient_stops(left)
         return feature
     
     feature_collection = {
