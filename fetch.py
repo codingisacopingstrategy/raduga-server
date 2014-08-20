@@ -28,8 +28,8 @@ def fetch_owm():
         return datetime.now().strftime("%Y-%m-%dT%H:00:00Z")
     
     
-    for x in range(z ** 2):
-        for y in range(z ** 2):
+    for x in range(2 ** z):
+        for y in range(2 ** z):
             uri = TILE_SERVER.format(s='a', z=z, x=x, y=y)
             # make a folder like raduga_tiles/4/5/
             path = os.path.join(TILE_FOLDER, quantisised_time(), str(z), str(x))
