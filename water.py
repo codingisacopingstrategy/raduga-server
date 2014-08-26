@@ -292,15 +292,19 @@ def find_rainclouds(THIS_GFS_SLUG):
     cloud_layer_greyscale.save(png_clouds_greymasked_file_path)
 
 if __name__ == '__main__':
-    logger.debug('looking for forecasts to process')
-    for f in sorted(os.listdir(GFS_FOLDER), reverse=True):
-        slug = f
-        path = os.path.join(GFS_FOLDER, slug)
-        if re.match(r'\d{10}', slug) and os.path.isdir(path):
-            if len(glob(os.path.join(path, '*pwat.png'))) > 0:
-                logger.debug("encountered already processed forecast %s, stop searching for forecasts" % slug)
-                break
-            if len(glob(os.path.join(path, '*pwat.grib'))) > 0:
-                logger.debug("encountered forecast %s, start processing" % slug)
-                find_rainclouds(slug)
+    if len(sys.argv) > 1:
+        for slug in sys.argv[1:]:
+            find_rainclouds(slug)
+    else:
+        logger.debug('looking for forecasts to process')
+        for f in sorted(os.listdir(GFS_FOLDER), reverse=True):
+            slug = f
+            path = os.path.join(GFS_FOLDER, slug)
+            if re.match(r'\d{10}', slug) and os.path.isdir(path):
+                if len(glob(os.path.join(path, '*pwat.png'))) > 0:
+                    logger.debug("encountered already processed forecast %s, stop searching for forecasts" % slug)
+                    break
+                if len(glob(os.path.join(path, '*pwat.grib'))) > 0:
+                    logger.debug("encountered forecast %s, start processing" % slug)
+                    find_rainclouds(slug)
 
