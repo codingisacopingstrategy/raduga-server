@@ -138,8 +138,10 @@ def find_rainclouds(THIS_GFS_SLUG):
     json_file_path = os.path.join(THIS_GFS_FOLDER, "GFS_half_degree.%s.pwat.json" % THIS_GFS_SLUG)
     png_file_path  = os.path.join(THIS_GFS_FOLDER, "GFS_half_degree.%s.pwat.png" % THIS_GFS_SLUG)
     
+    png_sun_mask_file_path            = os.path.join(THIS_GFS_FOLDER, "GFS_half_degree.sun_mask.%s.pwat.png" % THIS_GFS_SLUG)
     png_clouds_greyscale_file_path    = os.path.join(THIS_GFS_FOLDER, "GFS_half_degree.clouds_greyscale.%s.pwat.png" % THIS_GFS_SLUG)
     png_clouds_greymasked_file_path   = os.path.join(THIS_GFS_FOLDER, "GFS_half_degree.clouds_greymasked.%s.pwat.png" % THIS_GFS_SLUG)
+    png_clouds_greymasked_before_russia_file_path   = os.path.join(THIS_GFS_FOLDER, "GFS_half_degree.clouds_greymasked.before_russia.%s.pwat.png" % THIS_GFS_SLUG)
     png_cloud_mask_file_path          = os.path.join(THIS_GFS_FOLDER, "GFS_half_degree.cloud_mask.%s.pwat.png" % THIS_GFS_SLUG)
     png_cloud_mask_extruded_file_path = os.path.join(THIS_GFS_FOLDER, "GFS_half_degree.cloud_mask.extruded.%s.pwat.png" % THIS_GFS_SLUG)
     png_cloud_mask_combined_file_path = os.path.join(THIS_GFS_FOLDER, "GFS_half_degree.cloud_mask.combined.%s.pwat.png" % THIS_GFS_SLUG)
@@ -233,6 +235,8 @@ def find_rainclouds(THIS_GFS_SLUG):
     logger.debug("Calculating the colours based on the altitudes")
     colors = map(altitude2colors, altitudes)
     sun_mask.putdata(colors)
+    # Intermediary debug image:
+    sun_mask.save(png_sun_mask_file_path)
     
     # Calculate where the sun is in the image
     sun_i = altitudes.index(max(altitudes))
@@ -274,6 +278,8 @@ def find_rainclouds(THIS_GFS_SLUG):
     logger.debug("Masking where it is night or where the sun is too high to see rainbows")
     cloud_layer.paste(ImageOps.invert(sun_mask), (0, 0), ImageOps.invert(sun_mask))
     
+    # Intermediary debug image:
+    cloud_layer.save(png_clouds_greymasked_before_russia_file_path)
     logger.debug("Showing only rainbows over Russian soil")
     cloud_layer.paste(russia_layer, (0, 0), russia_layer)
     
