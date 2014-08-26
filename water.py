@@ -296,6 +296,9 @@ def find_rainclouds(THIS_GFS_SLUG):
     with open(clouds_json_file_path , 'w') as f:
         f.write(img2features(cloud_layer_greyscale, colours=True))
     cloud_layer_greyscale.save(png_clouds_greymasked_file_path)
+    
+    pipe = subprocess.Popen(['./vector.sh', THIS_GFS_SLUG,])
+    pipe.wait()
 
 if __name__ == '__main__':
     if len(sys.argv) > 1:
