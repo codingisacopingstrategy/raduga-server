@@ -2,9 +2,10 @@
 
 # Python Standard Library 
 import os
+from datetime import datetime
 
 # Dependencies: Flask + PIL or Pillow
-from flask import Flask, send_from_directory, redirect, render_template
+from flask import Flask, send_from_directory, redirect as redirect_flask, render_template
 import pymongo
 
 # Local imports
@@ -14,6 +15,18 @@ app = Flask(__name__)
 
 client = pymongo.MongoClient()
 db = client.raduga
+
+# Redirects should not be cached by the devices:
+def redirect(uri):
+    """
+    http://arusahni.net/blog/2014/03/flask-nocache.html
+    """
+    response = redirect_flask(uri)
+    response.headers['Last-Modified'] = datetime.now()
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '-1'
+    return response
 
 # These static files should be served by the web server
 @app.route('/tiles/<path:filename>')
