@@ -167,6 +167,10 @@ photos_schema = {
         "schema": {
             "username" : {
                 "type": "string"
+            },
+            "id" : {
+                "type": "string",
+                "required": False
             }
         }
     }
