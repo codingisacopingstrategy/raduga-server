@@ -188,7 +188,9 @@ eve_settings = {
             'schema': photos_schema,
             'datasource': {
                            "default_sort": [("created_at",-1)]
-                           }
+                           },
+           'cache_control': 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0',
+           'cache_expires': -1, 
        },
     },
     'MONGO_DBNAME': 'raduga',
