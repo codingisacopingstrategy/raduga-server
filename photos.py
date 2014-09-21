@@ -195,6 +195,7 @@ eve_settings = {
     'RESOURCE_METHODS': ['GET', 'POST'],
     'ITEM_METHODS': ['GET', 'POST', 'PATCH', 'DELETE'],
     'PUBLIC_METHODS': ['GET'],
+    'IF_MATCH': False,
 }
 
 def write_photo_versions(id):
