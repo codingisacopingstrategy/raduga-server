@@ -195,7 +195,7 @@ eve_settings = {
     },
     'MONGO_DBNAME': 'raduga',
     'RESOURCE_METHODS': ['GET', 'POST'],
-    'ITEM_METHODS': ['GET', 'POST', 'PATCH', 'DELETE'],
+    'ITEM_METHODS': ['GET', 'PATCH', 'DELETE'],
     'PUBLIC_METHODS': ['GET'],
     'IF_MATCH': False,
 }
