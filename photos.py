@@ -29,6 +29,10 @@ class SimpleTokenAuth(TokenAuth):
     
     """
     def check_auth(self, token, allowed_roles, resource, method):
+        """
+        resource='photos'
+        method='GET|POST|DELETE'
+        """
         if app.data.driver.db.users.find_one({'id': token }):
             return True
         else:
@@ -189,8 +193,8 @@ eve_settings = {
     },
     'MONGO_DBNAME': 'raduga',
     'RESOURCE_METHODS': ['GET', 'POST'],
-    'ITEM_METHODS': ['GET', 'PATCH'],
-    'PUBLIC_METHODS': ['GET']
+    'ITEM_METHODS': ['GET', 'POST', 'PATCH', 'DELETE'],
+    'PUBLIC_METHODS': ['GET'],
 }
 
 def write_photo_versions(id):
