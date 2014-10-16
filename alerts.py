@@ -43,22 +43,33 @@ def rainbow_spotted_alert(photo):
             break
     
     users = db.users.find({ "custom_fields.name_en" : { "$in": cities_to_check }, "custom_fields.notifications" : True, "user.username" : { "$ne" : photo['user']['username'] } })
-    rainbow_user_ids = [user['id'] for user in users]
     
-    logger.debug( ("after photo %s was uploaded, we found %s user(s) in the same area to which we sent a push message" % (photo['id'], len(rainbow_user_ids))).encode('utf8'))
+    for user in users:
+        if not 'badge' in user['custom_fields']:
+            user['custom_fields']['badge'] = 0
+        
+        if user['custom_fields']['language'] == 'ru':
+            message = u"%s обнаружил радугу возле %s" % (photo['user']['username'], photo['custom_fields']['name_ru'])
+        else:
+            message = "%s spotted a rainbow near %s" % (photo['user']['username'], photo['custom_fields']['name_en'])
     
-    if len(rainbow_user_ids) > 0:
         send_alert({
             "channel": "raduga_predictions",
-            "to_ids": rainbow_user_ids,
+            "to_ids": [user['id']],
             "payload": {
-                "alert": "%s spotted a rainbow near %s" % (photo['user']['username'], city_name_en),
+                "alert": message,
                 "type": "rainbow_spotted",
                 "username": photo['user']['username'],
                 "name_en": city_name_en,
-                "name_ru": photo['custom_fields']['name_ru']
+                "name_ru": photo['custom_fields']['name_ru'],
+                "badge": user['badge'] + 1
             }
-         })
+        })
+        
+        db.users.update({"id" : user['id']}, {'$inc': {'custom_fields.badge': 1}})
+    
+    logger.debug( ("after photo %s was uploaded, we found user %s in the same area" % (photo['id'], user['username']) ).encode('utf8'))
+
 
 def rainbow_prediction_alert(slug):
     rainbow_cities = json.load(open(os.path.join(GFS_FOLDER, slug, '%s.rainbow_cities.json' % slug)))
@@ -67,24 +78,35 @@ def rainbow_prediction_alert(slug):
     synch_users()
     
     users = db.users.find()
-    rainbow_user_ids = []
     
+    people = False
     for user in users:
         if 'custom_fields' in user and 'name_en' in user['custom_fields']:
             if user['custom_fields']['name_en'] in city_names:
-                rainbow_user_ids.append(user['id'])
+                people = True
+                
+                if not 'badge' in user['custom_fields']:
+                    user['custom_fields']['badge'] = 0
+                
+                if user['custom_fields']['language'] == 'ru':
+                    message = u"Сегодня днем у вас есть большой шанс увидеть радугу!"
+                else:
+                    message = "You have a large chance of rainbows!"
+            
+                logger.debug("%s in rainbow area for this forecast" % user['user_name'])
+                send_alert({
+                    "channel": "raduga_predictions",
+                    "to_ids": [user['id']],
+                    "payload": {
+                        "alert": message,
+                        "type": "rainbow_prediction",
+                    }
+                 })
+                
+                db.users.update({"id" : user['id']}, {'$inc': {'custom_fields.badge': 1}})
+
     
-    if len(rainbow_user_ids) > 0:
-        logger.debug("%s user(s) in rainbow areas for this forecast" % len(rainbow_user_ids))
-        send_alert({
-            "channel": "raduga_predictions",
-            "to_ids": rainbow_user_ids,
-            "payload": {
-                "alert": "You have a large chance of rainbows!",
-                "type": "rainbow_prediction",
-            }
-         })
-    else:
+    if not people:
         logger.debug("no people in rainbow areas for this forecast")
 
 if __name__ == "__main__":
