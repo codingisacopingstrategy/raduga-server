@@ -206,7 +206,7 @@ def find_rainclouds(THIS_GFS_SLUG):
     
     cloud_layer_greyscale = cloud_layer
     # Intermediary debug image:
-    # cloud_layer_greyscale.save(png_clouds_greyscale_file_path)
+    cloud_layer_greyscale.save(png_clouds_greyscale_file_path)
     
     
     logger.debug("Pushing the contrast and then tresholding the clouds")
@@ -251,7 +251,7 @@ def find_rainclouds(THIS_GFS_SLUG):
     cloud_layer = cloud_layer.offset(translate_x)
     
     # Intermediary debug image:
-    # cloud_layer.save(png_cloud_mask_file_path.replace(".png", ".not-inverted.png"))
+    cloud_layer.save(png_cloud_mask_file_path.replace(".png", ".not-inverted.png"))
     cloud_layer = ImageOps.invert(cloud_layer)
     cloud_layer.save(png_cloud_mask_file_path)
     
@@ -274,7 +274,7 @@ def find_rainclouds(THIS_GFS_SLUG):
     cloud_layer = cloud_layer.offset(translate_x * -1)
     
     # Intermediary debug image:
-    # cloud_layer.save(png_file_path.replace(".png", ".without-sun-mask.png"))
+    cloud_layer.save(png_file_path.replace(".png", ".without-sun-mask.png"))
     logger.debug("Masking where it is night or where the sun is too high to see rainbows")
     cloud_layer.paste(ImageOps.invert(sun_mask), (0, 0), ImageOps.invert(sun_mask))
     
