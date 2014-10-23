@@ -248,7 +248,7 @@ def find_rainclouds(THIS_GFS_SLUG):
     middle = ni / 2
     translate_x = middle - sun_x
     logger.debug("Moving the image %s pixels to the right to have the sun exactly in the middle" % translate_x)
-    cloud_layer = cloud_layer.offset(translate_x)
+    cloud_layer = cloud_layer.offset(translate_x, 0)
     
     # Intermediary debug image:
     cloud_layer.save(png_cloud_mask_file_path.replace(".png", ".not-inverted.png"))
@@ -271,7 +271,7 @@ def find_rainclouds(THIS_GFS_SLUG):
     cloud_layer.paste(extruded_cloud_layer, (0, 0), extruded_cloud_layer)
     
     logger.debug("Moving the image back to its original position")
-    cloud_layer = cloud_layer.offset(translate_x * -1)
+    cloud_layer = cloud_layer.offset(translate_x * -1, 0)
     
     # Intermediary debug image:
     cloud_layer.save(png_file_path.replace(".png", ".without-sun-mask.png"))
