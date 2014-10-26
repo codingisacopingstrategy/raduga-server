@@ -1,0 +1,5 @@
+GRIB2JSON_PATH = "/path/to/grib2json"
+ACS_KEY = "abc123abc123"
+ACS_SESSION_ID = "abc123abc123"
+SERVER_NAME = 'vps40616.public.cloudvps.com'
+TEST_USER = "abc123abc123"

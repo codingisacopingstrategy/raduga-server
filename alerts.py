@@ -58,8 +58,11 @@ def rainbow_spotted_alert(photo):
             "to_ids": [user['id']],
             "payload": {
                 "alert": message,
+                "vibrate": True,
+                "sound": "default",
                 "type": "rainbow_spotted",
                 "username": photo['user']['username'],
+                "photo_id": photo['id'],
                 "name_en": city_name_en,
                 "name_ru": photo['custom_fields']['name_ru'],
                 "badge": user['badge'] + 1
@@ -100,6 +103,8 @@ def rainbow_prediction_alert(slug):
                     "payload": {
                         "alert": message,
                         "type": "rainbow_prediction",
+                        "vibrate": True,
+                        "sound": "default",
                     }
                  })
                 
