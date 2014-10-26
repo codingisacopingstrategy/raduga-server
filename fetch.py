@@ -67,8 +67,8 @@ def fetch_gfs():
         d9 = d_rounded + nine_hours
         
         slug  = d_rounded.strftime("%Y%m%d%H") # '2014040812'
-        slug6 = d6.strftime("%Y%m%d%H") # '2014040812'
-        slug9 = d9.strftime("%Y%m%d%H") # '2014040812'
+        slug6 = d6.strftime("%Y%m%d%H")        # '2014040818'
+        slug9 = d9.strftime("%Y%m%d%H")        # '2014040821'
         
         target_folder6 = os.path.join(GFS_FOLDER, slug6)
         target_folder9 = os.path.join(GFS_FOLDER, slug9)

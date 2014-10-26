@@ -1,5 +1,8 @@
 local_settings.py
 latitudeslongitudesperpixel.json
+static/gfs/
+static/elektro/
+static/photos/
 
 fabfile.py
 

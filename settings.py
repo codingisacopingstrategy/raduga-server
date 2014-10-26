@@ -25,6 +25,8 @@ PHOTO_FOLDER         = os.path.join(os.path.abspath(os.path.dirname(__file__)), 
 ELEKTRO_L_FOLDER         = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'static', 'elektro')
 ELEKTRO_L_SRC_FOLDER     = os.path.join(ELEKTRO_L_FOLDER, 'src')
 
+BOUNDS = [[41.196091, 19.62726], [81.851929, 191.010254]]
+
 def get_latest_prec_folder():
     """
     This is to find the latest folder of the form 2013-12-25T11:00:00
