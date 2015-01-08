@@ -35,7 +35,7 @@ def base_static(filename):
 
 @app.route('/')
 def readme():
-    return send_from_directory(app.root_path, 'README.txt')
+    return send_from_directory(app.root_path, 'README.md')
 
 # Note: this will always serve the same file
 # Should be used in collaboration with nginx, that is, with a try -f

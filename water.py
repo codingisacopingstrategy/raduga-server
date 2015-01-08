@@ -1,23 +1,14 @@
 # -*- coding: utf-8 -*-
 
 """
-Get information from GFS
+This file implements the bulk of the rainbow-finding algorithm.
 
-Cameron Beccario’s https://github.com/cambecc/earth/ explained me how to get GRIB data from the Global Forecast System,
-and to convert this into JSON data using his grib2json utility. Something like:
-
-    curl "http://nomads.ncep.noaa.gov/cgi-bin/filter_gfs_hd.pl?file=gfs.t00z.mastergrb2f00&lev_entire_atmosphere_%5C%28considered_as_a_single_layer%5C%29=on&var_PWAT=on&leftlon=0&rightlon=360&toplat=90&bottomlat=-90&dir=%2Fgfs.2014022100%2Fmaster" -o "GFS_half_degree.2014022100.grib"    
-    grib2json -d -n -o precipitable-water-gfs-0.5.json GFS_half_degree.2014022100.grib
-
-The logic of plotting the data was partly copied from the JavaScript here:
-https://github.com/cambecc/earth/blob/e7be4d6810f211217956daf544111502fc57a868/public/libs/earth/1.0.0/products.js#L607
-
+Please consult README.md for an overview.
 """
 
 import subprocess
 from datetime import datetime
 from glob import glob
-import math
 import json
 import sys
 import os
@@ -25,10 +16,9 @@ import re
 
 import pytz
 import Pysolar
-import dateutil.parser
-from PIL import Image, ImageOps, ImageFilter, ImageEnhance
+from PIL import Image, ImageOps, ImageEnhance
 
-from settings import GFS_FOLDER, LATEST_GFS_SLUG
+from settings import GFS_FOLDER
 from utils import logger
 
 try:
@@ -39,6 +29,18 @@ except ImportError:
 
 def img2features(image, colours=False):
     """
+    This takes an image as produced in this file’s main function, `find_rainclouds`.
+    It imagines this image to represent the world mapped in Mercator projection,
+    and for every pixel create a Geo-JSON Feature: a kind of description that can
+    be used on Leaflet.js or Google Maps or other popular mapping solutions.
+    
+    Initially this was used to draw the rainclouds and rainbows in the mobile app.
+    But it turned out this approach was to heavy:the app had to draw thousands
+    of little squares. Now the `potrace` program is used, which creates polygons.
+    As explained in the `find_rainclouds` function.
+    
+    Attributes:
+    
     colours=False:
     Given a grey-scale image, return a Geo-JSON string, that for each black pixel
     represents a square point on the map.
@@ -138,13 +140,12 @@ def find_rainclouds(THIS_GFS_SLUG):
     json_file_path = os.path.join(THIS_GFS_FOLDER, "GFS_half_degree.%s.pwat.json" % THIS_GFS_SLUG)
     png_file_path  = os.path.join(THIS_GFS_FOLDER, "GFS_half_degree.%s.pwat.png" % THIS_GFS_SLUG)
     
-    png_sun_mask_file_path            = os.path.join(THIS_GFS_FOLDER, "GFS_half_degree.sun_mask.%s.pwat.png" % THIS_GFS_SLUG)
-    png_clouds_greyscale_file_path    = os.path.join(THIS_GFS_FOLDER, "GFS_half_degree.clouds_greyscale.%s.pwat.png" % THIS_GFS_SLUG)
-    png_clouds_greymasked_file_path   = os.path.join(THIS_GFS_FOLDER, "GFS_half_degree.clouds_greymasked.%s.pwat.png" % THIS_GFS_SLUG)
+    png_sun_mask_file_path                          = os.path.join(THIS_GFS_FOLDER, "GFS_half_degree.sun_mask.%s.pwat.png" % THIS_GFS_SLUG)
+    png_clouds_greyscale_file_path                  = os.path.join(THIS_GFS_FOLDER, "GFS_half_degree.clouds_greyscale.%s.pwat.png" % THIS_GFS_SLUG)
+    png_clouds_greymasked_file_path                 = os.path.join(THIS_GFS_FOLDER, "GFS_half_degree.clouds_greymasked.%s.pwat.png" % THIS_GFS_SLUG)
     png_clouds_greymasked_before_russia_file_path   = os.path.join(THIS_GFS_FOLDER, "GFS_half_degree.clouds_greymasked.before_russia.%s.pwat.png" % THIS_GFS_SLUG)
-    png_cloud_mask_file_path          = os.path.join(THIS_GFS_FOLDER, "GFS_half_degree.cloud_mask.%s.pwat.png" % THIS_GFS_SLUG)
-    png_cloud_mask_extruded_file_path = os.path.join(THIS_GFS_FOLDER, "GFS_half_degree.cloud_mask.extruded.%s.pwat.png" % THIS_GFS_SLUG)
-    png_cloud_mask_combined_file_path = os.path.join(THIS_GFS_FOLDER, "GFS_half_degree.cloud_mask.combined.%s.pwat.png" % THIS_GFS_SLUG)
+    png_cloud_mask_file_path                        = os.path.join(THIS_GFS_FOLDER, "GFS_half_degree.cloud_mask.%s.pwat.png" % THIS_GFS_SLUG)
+    png_cloud_mask_extruded_file_path               = os.path.join(THIS_GFS_FOLDER, "GFS_half_degree.cloud_mask.extruded.%s.pwat.png" % THIS_GFS_SLUG)
     
     russia_layer = Image.open(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'russia.png'))
     
@@ -172,6 +173,9 @@ def find_rainclouds(THIS_GFS_SLUG):
         
     with open(json_file_path) as f:
         j = json.loads(f.read())
+    
+    # The logic of plotting the data was partly copied from the JavaScript here:
+    # https://github.com/cambecc/earth/blob/e7be4d6810f211217956daf544111502fc57a868/public/libs/earth/1.0.0/products.js#L607
     
     header = j[0]['header']
     data   = j[0]['data']
@@ -212,7 +216,7 @@ def find_rainclouds(THIS_GFS_SLUG):
     logger.debug("Pushing the contrast and then tresholding the clouds")
     enhancer = ImageEnhance.Contrast(cloud_layer)
     cloud_layer = enhancer.enhance(8)
-    threshold = 191  
+    threshold = 191
     cloud_layer = cloud_layer.point(lambda p: p > threshold and 255)  
     
     cloud_layer_greyscale.paste(cloud_layer, (0,0), cloud_layer)
@@ -303,9 +307,12 @@ def find_rainclouds(THIS_GFS_SLUG):
 
 if __name__ == '__main__':
     if len(sys.argv) > 1:
+        # specify one ar more slugs in the form YYYYMMDDHH as command line arguments
         for slug in sys.argv[1:]:
             find_rainclouds(slug)
     else:
+        # This is the default behaviour
+        # Goes back in time tho find the most recent unprocessed grib file
         logger.debug('looking for forecasts to process')
         for f in sorted(os.listdir(GFS_FOLDER), reverse=True):
             slug = f

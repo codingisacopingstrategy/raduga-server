@@ -1,7 +1,14 @@
 # -*- coding: utf-8 -*-
 """
-Check which cities are in one of the rainbow_areas as predicted in water.py
+Load a list of Russian cities with their coordinates
+
+Open the latest predicted rainbows image as created by water.py
+Check which cities are in one of the rainbow areas.
+
+Create a file "YYYYMMDDHH.rainbow_cities.json" that can be served
+to the application.
 """
+
 import json
 import codecs
 

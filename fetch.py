@@ -7,6 +7,19 @@ import os
 from settings import TILE_SERVER, TILE_FOLDER, GFS_FOLDER
 from utils import logger
 
+"""
+This is the code that serves to download the raw precipitation data.
+
+Run it as such: python fetch.py
+
+It tries to find the most recent GRIB file as available from the
+Global Forecast System.
+
+No dependencies outside the Python Standard Library
+"""
+
+
+
 class AppURLopener(urllib.FancyURLopener):
     version = 'Mozilla/5.0'
  
@@ -15,8 +28,15 @@ urllib._urlopener = AppURLopener()
 
 def fetch_owm():
     """
-    Download the latest precipitation tiles from Open Weather Map.
+    Download the latest precipitation tiles from OpenWeatherMap.
     At zoom level 4, there are 4² × 4² = 16 × 16 = 256 tiles.
+    
+    We don’t actually use OpenWeatherMap anymore in the application.
+    However, the code is still useful to download tiles from any map
+    that follows the conventions layed out by OpenStreetMap:
+    
+    We used a variation of this code to download the tiles from the
+    Stamen black & white map we used cached in the application.
     """
     ZOOM_LEVEL = z =  4
     
@@ -40,8 +60,16 @@ def fetch_owm():
 
 def fetch_gfs():
     """
-    Download the latest forecast from the Global Forecast System,
-    Already filtered for Precipitable Water.
+    Download the latest weather forecast from the Global Forecast System.
+    There are some 300 different tables in the GFS data, so we ask it to 
+    filtered for Precipitable Water (PWAT), the information that interests us.
+    
+    The GFS data is produced every six hours. It contains information about
+    the current weather situation and for 3, 6, 9, 12 etc. hours into
+    the future. Because the GFS is not immediately available (in general
+    several hours after the time indicated as ‘now’), we use the predictions
+    of 6 hours and 9 hours into the future. This way we have a time point for
+    every 3 hours.
     """
     six_hours  = timedelta(hours=6)
     nine_hours = timedelta(hours=9)
