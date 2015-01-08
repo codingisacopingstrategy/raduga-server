@@ -1,39 +1,67 @@
 Raduga: server side components
 ==============================
 
-These are the serverside components for the Raduga app,
-the app that predicts rainbows over russia.
+These are the serverside components for the Raduga app, the app that predicts rainbows over Russia.
 
-/latest/elektro-l           redirects to the latest image of elektro l
-/latest/rainbows.json       redirects to the latest series of GEO-json features of rainbows
-/latest/clouds.json         redirects to the latest series of GEO-json features of clouds
-/latest/rainbow_cities.json redirects to a list of cities that are predicted to be in a rainbow zone
+It consists of three parts:
 
-/photos/                 JSON feed of photos posted to Raduga
+- A service to fetch meteorological data, and predict rainbows. 
 
-Source code:
+This is written as a collection of Python scripts, that output JSON files. They are collected in the script [predict.sh][a1].
 
-http://github.com/codingisacopingstrategy/raduga-server
+In general, by running this script every three hours the predictions should stay up to date. One can achieve this by making the script part of a [cronjob][a2].
 
-Copyright (C) 2014 Eric Schrijver and The Pink Pony Express
+For a description of how the rainbow prediction works, see below: ‘The rainbow algorithm’
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+- A web service that makes the predictions available to the mobile app
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Affero General Public License for more details.
+In [app.py][a3], we find a small python web application that provides web-addresses for the rainbow-predictions:
 
-You should have received a copy of the GNU Affero General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    /latest/elektro-l           redirects to the latest image of elektro l
+    /latest/rainbows.json       redirects to the latest series of GEO-json features of rainbows
+    /latest/clouds.json         redirects to the latest series of GEO-json features of clouds
+    /latest/rainbow_cities.json redirects to a list of cities that are predicted to be in a rainbow zone
 
+The application uses the [Flask web framework][a4] and can be launched with `python app.py`. Consult the [Flask documentation][a5] on how to host this application on a web server.
 
-# The rainbow-algorithm
+- A web service for rainbow spotting photos
 
-## 1: Find out where it rains
+In [photos.py][a6], we find a small API for retrieving and posting photos. It is intended for spotting rainbows through the Raduga mobile application.
+
+    /photos/                    JSON feed of photos posted to Raduga
+
+The API uses [Eve][a7], a Python REST API framework based on Flask. It requires Mongodb, and is otherwise hosted in the same way as the rainbow prediction web service.
+
+[a1]: https://github.com/codingisacopingstrategy/raduga-server/blob/master/predict.sh
+[a2]: http://en.wikipedia.org/wiki/Cron "Cron - Wikipedia, the free encyclopedia"
+[a3]: https://github.com/codingisacopingstrategy/raduga-server/blob/master/app.py
+[a4]: http://flask.pocoo.org/ "Welcome | Flask (A Python Microframework)"
+[a5]: http://flask.pocoo.org/docs/0.10/deploying/ "Deployment Options &mdash; Flask Documentation (0.10)"
+[a6]: https://github.com/codingisacopingstrategy/raduga-server/blob/master/photos.py
+[a7]: http://python-eve.org/ "Python REST API Framework &mdash; Eve 0.5-dev documentation"
+
+## License
+
+    Copyright (C) 2014 Eric Schrijver and The Pink Pony Express
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+Consult the source code: <http://github.com/codingisacopingstrategy/raduga-server>
+
+## The rainbow-algorithm
+
+### 1: Find out where it rains
 
 Rainbows need rain and sun. So we need to figure out where is the sun, and where is the rain. Firstly we figure out where it rains.
 
@@ -47,7 +75,7 @@ Now that we have the GRIB data about precipitation, we can get to the next step:
 
 Since the GRIB data already provides us with information about the coordinate system, so we can use this to map to an image in a straightforward fashion. We only have to transform the values so they map to the 0-255 range of a grayscale image. From here on we treat the data as an image. An image is just a two-dimensional array, but thinking about the data as an image as opposed to a series of numbers makes it easy to conceptualise the transformations and to show them.
 
-## 2. Find out where the sun is shining
+### 2. Find out where the sun is shining
 
 To see a rainbow, one needs to be standing with ones back to the sun, looking in the direction of the raincloud. The sun can not be too high. Water always refracts light in the same way, the angle between the incoming sunlight and the rainbow being 180 minus 42 degrees. Once the sun gets to high (above 42 degrees) the rainbow disappears behind the horizon. That is why you see more rainbows in spring and autumn, as the sun stays lower throughout the day.
 
@@ -57,7 +85,7 @@ The approach might not be the fastest, but it allows us to easily find the locat
 
 We also create a mask, that blacks out all parts where the solar altitude is not between 0 and 42 degrees.
 
-## 3. Find out where the rain meets the sun
+### 3. Find out where the rain meets the sun
 
 Rainbows can appear at the edge of rainclouds. But they can only appear if the rainclouds find themselves in the opposite direction of the sun.
 
@@ -79,7 +107,7 @@ Because at this point we are manipulating images, we can use the Python Imaging 
 
 For the areas where the sun is shining, we find the edges of the rainclouds from the center of the sun.
 
-## 4. Propose the rainbows to the world
+### 4. Propose the rainbows to the world
 
 To make the rainbows visible, we have to encode the pixels that represent rainbow areas so that they can be displayed on an existing map. The layer of the rainbows is projected over another layer, that of the clouds, for which we also know the pixel locations. We do this by encoding them as [GeoJSON][17] features, which is a kind of description that can be visualised easily on popular mapping technologies like Google maps, [d3.js][18] and [leaflet.js][19].
 
