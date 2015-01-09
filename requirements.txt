@@ -1,0 +1,8 @@
+Eve==0.3
+Flask==0.10.1
+Flask-PyMongo==0.3.0
+Pysolar==0.6-alpha
+pymongo==2.6.3
+python-apt==0.8.8.2
+python-dateutil==1.5
+pytz==2012c

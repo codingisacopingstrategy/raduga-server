@@ -13,6 +13,10 @@ In general, by running this script every three hours the predictions should stay
 
 For a description of how the rainbow prediction works, see below: ‘The rainbow algorithm’
 
+When the scripts run, they log output into a MongoDB database to track progress. If you want to see the output of the various scripts directly into the terminal as you test them, run the following command:
+
+    echo "DEBUG = True" > local_settings.py
+
 - A web service that makes the predictions available to the mobile app
 
 In [app.py][a3], we find a small python web application that provides web-addresses for the rainbow-predictions:
@@ -21,8 +25,10 @@ In [app.py][a3], we find a small python web application that provides web-addres
     /latest/rainbows.json       redirects to the latest series of GEO-json features of rainbows
     /latest/clouds.json         redirects to the latest series of GEO-json features of clouds
     /latest/rainbow_cities.json redirects to a list of cities that are predicted to be in a rainbow zone
+    /hq/                        consult a log of the prediction activities
 
 The application uses the [Flask web framework][a4] and can be launched with `python app.py`. Consult the [Flask documentation][a5] on how to host this application on a web server.
+
 
 - A web service for rainbow spotting photos
 
@@ -58,6 +64,21 @@ The API uses [Eve][a7], a Python REST API framework based on Flask. It requires 
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 Consult the source code: <http://github.com/codingisacopingstrategy/raduga-server>
+
+## Dependencies
+
+The server-side components have been tested on Debian 7.
+
+    sudo apt-get update
+    # install system-wide dependencies (the jdk+maven is for grib2json):
+    sudo apt-get install imagemagick potrace openjdk-7-jdk openjdk-7-jre maven python-imaging
+    # install python dependencies
+    sudo pip install -r requirements.txt
+
+Then install MongoDB [following their instructions][d1] and install GRIB2JSON [from source][d2].
+
+[d1]: http://docs.mongodb.org/manual/tutorial/install-mongodb-on-debian/ "Install MongoDB on Debian &mdash; MongoDB Manual 2.6.6"
+[d2]: https://github.com/cambecc/grib2json
 
 ## The rainbow-algorithm
 
