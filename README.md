@@ -96,6 +96,8 @@ Now that we have the GRIB data about precipitation, we can get to the next step:
 
 Since the GRIB data already provides us with information about the coordinate system, so we can use this to map to an image in a straightforward fashion. We only have to transform the values so they map to the 0-255 range of a grayscale image. From here on we treat the data as an image. An image is just a two-dimensional array, but thinking about the data as an image as opposed to a series of numbers makes it easy to conceptualise the transformations and to show them.
 
+![Raduga Pres Page 02 Image 0001](iceberg/raduga_pres_Page_02_Image_0001.png)
+
 ### 2. Find out where the sun is shining
 
 To see a rainbow, one needs to be standing with ones back to the sun, looking in the direction of the raincloud. The sun can not be too high. Water always refracts light in the same way, the angle between the incoming sunlight and the rainbow being 180 minus 42 degrees. Once the sun gets to high (above 42 degrees) the rainbow disappears behind the horizon. That is why you see more rainbows in spring and autumn, as the sun stays lower throughout the day.
@@ -106,23 +108,41 @@ The approach might not be the fastest, but it allows us to easily find the locat
 
 We also create a mask, that blacks out all parts where the solar altitude is not between 0 and 42 degrees.
 
+![Raduga Pres Page 06 Image 0001](iceberg/raduga_pres_Page_06_Image_0001.png)
+
 ### 3. Find out where the rain meets the sun
 
 Rainbows can appear at the edge of rainclouds. But they can only appear if the rainclouds find themselves in the opposite direction of the sun.
 
 To find these edges, we’ve used the following approach:
 
-- Take the rain-cloud mask generated in step 1.
-- Copy it, and slightly extrude it with the position of the sun (found in step 2) as the center point
+- Take the rain-information generated in step 1. Contrast and treshold it as to generate a mask:
+
+![Raduga Pres Page 03 Image 0001](iceberg/raduga_pres_Page_03_Image_0001.png)
+
+- Copy the mask, and slightly extrude it with the position of the sun (found in step 2) as the center point
+
+![Raduga Pres Page 04 Image 0001](iceberg/raduga_pres_Page_04_Image_0001.png)
+
 - Subtract the original clouds from the extrusion
+
+![Raduga Pres Page 05 Image 0001](iceberg/raduga_pres_Page_05_Image_0001.png)
 
 What we have left is the possible position of the rainbows. Then
 
 - Subtract the mask of sun-positions generated in step 2
 
+![Raduga Pres Page 06 Image 0001](iceberg/raduga_pres_Page_06_Image_0001.png)
+
+![Raduga Pres Page 07 Image 0001](iceberg/raduga_pres_Page_07_Image_0001.png)
+
 This gives us all possible rainbow-areas on earth. For the purposes of Радуга, we:
 
 - Mask out Russia
+
+![Raduga Pres Page 08 Image 0001](iceberg/raduga_pres_Page_08_Image_0001.png)
+
+![Raduga Pres Page 09 Image 0001](iceberg/raduga_pres_Page_09_Image_0001.png)
 
 Because at this point we are manipulating images, we can use the Python Imaging Library for this purpose. Except for the extrusion: I couldn’t find out how to use PIL for this so we do it with the classic ImageMagick command line software.
 
@@ -135,6 +155,8 @@ To make the rainbows visible, we have to encode the pixels that represent rainbo
 In the app we display the map with the leaflet.js JavaScript library. To get a more austere, black-and-white, look we used the wonderful Open Source map tiles created by Stamen Design called ‘[Toner Lite][20]’.
 
 Initially every pixel was encoded as GeoJSON feature. But it turned out this approach was to heavy: the app had to draw thousands of little squares, especially for the clouds. The solution was to group the pixels together in larger shapes: polygons. We accomplished this with Peter Selinger’s [potrace][21], a command line program that can trace bitmap images into vector shapes. Even if potrace has existed for a long time, quit recently Christoph Hormann [contributed an output module][22] that allows to create GeoJSON directly. Instead of trying to interpolate smooth curves, we configure potrace as to leave the polygons with straight edges.
+
+![Raduga Pres Page 10 Image 0001](iceberg/raduga_pres_Page_10_Image_0001.png)
 
 
 [0]: http://www.buienradar.nl/ "Buienradar.nl - Weer - Actuele neerslag, weerbericht, weersverwachting, sneeuwradar en satellietbeelden"
