@@ -21,17 +21,24 @@ from functools import wraps
 class SimpleTokenAuth(TokenAuth):
     """
     This uses the username from HTTP basic authentication as its token
-    (Slightly confusing: I would have thought it would use the `Authorization`: header)
     
-    So:
+    The token that needs to be passed is the ID of the user in the database
+    If it finds the user ID in the database, the picture is allowed
     
-    `curl -i -d {"key":"value","key","value",etc...} -H 'Content-Type: application/json' --user 436641f6e1usertoken: http://127.0.0.1:5000/photos`
+    FIXME: the big inconvenience is that the canonical base of users is not stored in
+    this database: it is stored in Appcelerator Cloud Services.
+    The file users.py serves to synchronise these two databases.
+    It would be better if user management would be only through this server.
+    
+    `curl -i -d {"key":"value","key","value",etc...} -H 'Content-Type: application/json' --user 436641f6e1etceteara: http://127.0.0.1:5000/photos`
     
     """
     def check_auth(self, token, allowed_roles, resource, method):
         """
         resource='photos'
         method='GET|POST|DELETE'
+        
+        If the user is not found, synchronise the database first
         """
         if app.data.driver.db.users.find_one({'id': token }):
             return True
@@ -201,6 +208,15 @@ eve_settings = {
 }
 
 def write_photo_versions(id):
+    """
+    After the photo is uploaded, we create several sizes thumbnails of the photo to be used in the app
+    
+    FIXME: For now the photo is uploaded to the GridFS file system first, because this was
+    the easiest to implement. It is then saved to disk, and the reduced versions are generated.
+    Of course it would be more clean if it got saved to disk in the first place and the
+    GridFS step was skipped.
+    """
+    
     def bounds(width):
         """
         The photos are viewed primarily in a scroll, on portrait devices.
@@ -236,9 +252,16 @@ def write_photo_versions(id):
     
     # set the `url` fields for this photo in the database, so the app can display the photo
     app.data.driver.db.photos.update({"id": id}, { "$set": update})
+    
+    # Send out a push message to all users in the vicinity of the spotted photo
+    # (as defined in alerts.py)
     rainbow_spotted_alert(photo)
     
 def after_update_photos(request, payload):
+    """
+    Right now the photo is uploaded in two parts: first the metadata, then the photo itself.
+    The latter request is an `update` request. After this request, we want to create the thumbnails
+    """
     write_photo_versions(request.form['id'])
 
 app = Eve(settings=eve_settings, auth=SimpleTokenAuth, static_folder=STATIC_FOLDER)

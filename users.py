@@ -1,6 +1,22 @@
 # -*- coding: utf-8 -*-
 """
-Synch the local MongoDB database with the Appcelerator Cloud Services
+Synch the local MongoDB database with the Appcelerator Cloud Services used
+by the Raduga mobile application. This way we import the user data.
+
+Requires the accompagnying Cloud Services Key `ACS_KEY` in local_settings.py.
+Find this in the management panel of Appcelerator.
+In your Titanium Application, this corresponds to `acs-api-key-development` or
+`acs-api-key-production` in your tiapp.xml.
+
+Also requires a session key.
+You should obtain a session key by logging in as a user through CURL (first create
+the user in the management interface)
+cf: http://docs.appcelerator.com/cloud/latest/#!/api/Users-method-login
+    curl -b cookies.txt -c cookies.txt -F "login=mgoff@appcelerator.com" -F "password=food" https://api.cloud.appcelerator.com/v1/users/login.json?key=<YOUR APP APP KEY>&pretty_json=true
+The session key will be part of the JSON response:
+
+FIXME: this is something of a hack. Best not at all depend on Appcelerator Cloud Services
+and just do user management in this EVE application.
 """
 
 import json

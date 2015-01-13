@@ -1,5 +1,13 @@
+# Where the GRIB2JSON utility finds itself
 GRIB2JSON_PATH = "/path/to/grib2json"
+
+# Required for uploading photos and sending push messages
+# See users.py for an explanation of these values
 ACS_KEY = "abc123abc123"
 ACS_SESSION_ID = "abc123abc123"
+
+# Name of the server where the various services in this repository are hosted
 SERVER_NAME = 'vps40616.public.cloudvps.com'
+
+# ID of the user to send tests to when runnen alerts_test.py
 TEST_USER = "abc123abc123"
