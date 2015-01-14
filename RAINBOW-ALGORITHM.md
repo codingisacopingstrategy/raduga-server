@@ -1,5 +1,7 @@
 # The Rainbow Algorithm
 
+Read online: <https://github.com/codingisacopingstrategy/raduga-server/blob/master/RAINBOW-ALGORITHM.md>
+
 ## 1: Find out where it rains
 
 Rainbows need rain and sun. So we need to figure out where is the sun, and where is the rain. Firstly we figure out where it rains.
